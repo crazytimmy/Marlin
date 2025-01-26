@@ -23,6 +23,10 @@
 
 #include "env_validate.h"
 
+//
+// https://github.com/bigtreetech/SKR-3
+//
+
 // If you have the BigTreeTech driver expansion module, enable BTT_MOTOR_EXPANSION
 // https://github.com/bigtreetech/BTT-Expansion-module/tree/master/BTT%20EXP-MOT
 //#define BTT_MOTOR_EXPANSION
@@ -44,7 +48,7 @@
   #define SOFT_I2C_EEPROM                         // Force the use of Software I2C
   #define I2C_SCL_PIN                       PA14
   #define I2C_SDA_PIN                       PA13
-  #define MARLIN_EEPROM_SIZE              0x1000  // 4K
+  #define MARLIN_EEPROM_SIZE             0x1000U  // 4K
 #endif
 
 //
@@ -131,10 +135,8 @@
 //
 // Probe enable
 //
-#if ENABLED(PROBE_ENABLE_DISABLE)
-  #ifndef PROBE_ENABLE_PIN
-    #define PROBE_ENABLE_PIN          SERVO0_PIN
-  #endif
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
 #endif
 
 //
@@ -296,19 +298,10 @@
   // Software serial
   //
   #define X_SERIAL_TX_PIN                   PD5
-  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
-
   #define Y_SERIAL_TX_PIN                   PD0
-  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
-
   #define Z_SERIAL_TX_PIN                   PE1
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
-
   #define E0_SERIAL_TX_PIN                  PC6
-  #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
-
   #define E1_SERIAL_TX_PIN                  PD12
-  #define E1_SERIAL_RX_PIN      E1_SERIAL_TX_PIN
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
@@ -357,8 +350,7 @@
 // Must use soft SPI because Marlin's default hardware SPI is tied to LCD's EXP2
 //
 #if SD_CONNECTION_IS(LCD)
-  #define SDSS                       EXP2_04_PIN
-  #define SD_SS_PIN                         SDSS
+  #define SD_SS_PIN                  EXP2_04_PIN
   #define SD_SCK_PIN                 EXP2_02_PIN
   #define SD_MISO_PIN                EXP2_01_PIN
   #define SD_MOSI_PIN                EXP2_06_PIN
@@ -392,7 +384,6 @@
     #define E2_CS_PIN                EXP1_06_PIN
     #if HAS_TMC_UART
       #define E2_SERIAL_TX_PIN       EXP1_06_PIN
-      #define E2_SERIAL_RX_PIN       EXP1_06_PIN
     #endif
   #endif
 
@@ -405,7 +396,6 @@
     #define E3_CS_PIN                EXP1_04_PIN
     #if HAS_TMC_UART
       #define E3_SERIAL_TX_PIN       EXP1_04_PIN
-      #define E3_SERIAL_RX_PIN       EXP1_04_PIN
     #endif
   #else
     #define E3_ENABLE_PIN            EXP2_07_PIN
@@ -420,7 +410,6 @@
     #define E4_CS_PIN                EXP1_02_PIN
     #if HAS_TMC_UART
       #define E4_SERIAL_TX_PIN       EXP1_02_PIN
-      #define E4_SERIAL_RX_PIN       EXP1_02_PIN
     #endif
   #else
     #define E4_ENABLE_PIN            EXP2_07_PIN
@@ -429,13 +418,37 @@
 #endif // BTT_MOTOR_EXPANSION
 
 //
-// LCDs and Controllers
+// LCD / Controller
 //
+
 #if IS_TFTGLCD_PANEL
 
   #if ENABLED(TFTGLCD_PANEL_SPI)
     #define TFTGLCD_CS               EXP2_03_PIN
   #endif
+
+#elif HAS_DWIN_E3V2 || IS_DWIN_MARLINUI
+  /**
+   *        ------                 ------            ---
+   *       | 1  2 |               | 1  2 |            1 |
+   *       | 3  4 |            RX | 3  4 | TX       | 2 | RX
+   *   ENT   5  6 | BEEP      ENT   5  6 | BEEP     | 3 | TX
+   *     B | 7  8 | A           B | 7  8 | A        | 4 |
+   *   GND | 9 10 | VCC       GND | 9 10 | VCC        5 |
+   *        ------                 ------            ---
+   *         EXP1                   DWIN             TFT
+   *
+   * DWIN pins are labeled as printed on DWIN PCB. GND, VCC, A, B, ENT & BEEP can be connected in the same
+   * orientation as the existing plug/DWIN to EXP1. TX/RX need to be connected to the TFT port, with TX->RX, RX->TX.
+   */
+  #ifndef NO_CONTROLLER_CUSTOM_WIRING_WARNING
+    #error "CAUTION! Ender-3 V2 display requires a custom cable. See 'pins_BTT_SKR_V3_0_common.h' for details. (Define NO_CONTROLLER_CUSTOM_WIRING_WARNING to suppress this warning.)"
+  #endif
+
+  #define BEEPER_PIN                 EXP1_06_PIN
+  #define BTN_EN1                    EXP1_08_PIN
+  #define BTN_EN2                    EXP1_07_PIN
+  #define BTN_ENC                    EXP1_05_PIN
 
 #elif HAS_WIRED_LCD
 
@@ -461,10 +474,12 @@
 
   #elif HAS_SPI_TFT                               // Config for Classic UI (emulated DOGM) and Color UI
 
+    #define TFT_SCK_PIN              EXP2_02_PIN
+    #define TFT_MISO_PIN             EXP2_01_PIN
+    #define TFT_MOSI_PIN             EXP2_06_PIN
+
     #define BTN_EN1                  EXP2_03_PIN
     #define BTN_EN2                  EXP2_05_PIN
-
-    #define TFT_DC_PIN                TFT_A0_PIN
 
     #ifndef TFT_WIDTH
       #define TFT_WIDTH                      480
@@ -474,10 +489,24 @@
     #endif
 
     #if ENABLED(BTT_TFT35_SPI_V1_0)
-      // 480x320, 3.5", SPI Display with Rotary Encoder.
-      // Stock Display for the BIQU B1 SE.
+
+      /**
+       *            ------                       ------
+       *    BEEPER | 1  2 | LCD-BTN        MISO | 1  2 | CLK
+       *    T_MOSI | 3  4 | T_CS       LCD-ENCA | 3  4 | TFTCS
+       *     T_CLK | 5  6   T_MISO     LCD-ENCB | 5  6   MOSI
+       *    PENIRQ | 7  8 | F_CS             RS | 7  8 | RESET
+       *       GND | 9 10 | VCC             GND | 9 10 | NC
+       *            ------                       ------
+       *             EXP1                         EXP2
+       *
+       * 480x320, 3.5", SPI Display with Rotary Encoder.
+       * Stock Display for the BIQU B1 SE Series.
+       * Schematic: https://github.com/bigtreetech/TFT35-SPI/blob/master/v1/Hardware/BTT%20TFT35-SPI%20V1-SCH.pdf
+       */
       #define TFT_CS_PIN             EXP2_04_PIN
-      #define TFT_A0_PIN             EXP2_07_PIN
+      #define TFT_DC_PIN             EXP2_07_PIN
+      #define TFT_A0_PIN              TFT_DC_PIN
 
       #define TOUCH_CS_PIN           EXP1_04_PIN
       #define TOUCH_SCK_PIN          EXP1_05_PIN
@@ -513,7 +542,8 @@
        *                        EXP1                                     EXP2
        */
       #define TFT_CS_PIN             EXP1_07_PIN  // SPI1_CS
-      #define TFT_A0_PIN             EXP1_08_PIN  // SPI1_RS
+      #define TFT_DC_PIN             EXP1_08_PIN  // SPI1_RS
+      #define TFT_A0_PIN              TFT_DC_PIN
 
       #define TFT_RESET_PIN          EXP1_04_PIN
 
@@ -521,7 +551,7 @@
       #define TFT_BACKLIGHT_PIN LCD_BACKLIGHT_PIN
 
       #define TOUCH_BUTTONS_HW_SPI
-      #define TOUCH_BUTTONS_HW_SPI_DEVICE 1
+      #define TOUCH_BUTTONS_HW_SPI_DEVICE      1
 
       #define TOUCH_CS_PIN           EXP1_05_PIN  // SPI1_NSS
       #define TOUCH_SCK_PIN          EXP2_02_PIN  // SPI1_SCK
@@ -531,7 +561,7 @@
       #define LCD_READ_ID                   0xD3
       #define LCD_USE_DMA_SPI
 
-      #define TFT_BUFFER_SIZE              14400
+      #define TFT_BUFFER_WORDS             14400
 
       #ifndef TOUCH_CALIBRATION_X
         #define TOUCH_CALIBRATION_X       -17253
@@ -612,8 +642,8 @@
 //
 // NeoPixel LED
 //
-#ifndef NEOPIXEL_PIN
-  #define NEOPIXEL_PIN                      PE6
+#ifndef BOARD_NEOPIXEL_PIN
+  #define BOARD_NEOPIXEL_PIN                PE6
 #endif
 
 #if ENABLED(WIFISUPPORT)

@@ -122,14 +122,16 @@ void GcodeSuite::say_units() {
  * Return -1 if the T parameter is out of range
  */
 int8_t GcodeSuite::get_target_extruder_from_command() {
-  if (parser.seenval('T')) {
-    const int8_t e = parser.value_byte();
-    if (e < EXTRUDERS) return e;
-    SERIAL_ECHO_START();
-    SERIAL_CHAR('M'); SERIAL_ECHO(parser.codenum);
-    SERIAL_ECHOLNPGM(" " STR_INVALID_EXTRUDER " ", e);
-    return -1;
-  }
+  #if HAS_TOOLCHANGE
+    if (parser.seenval('T')) {
+      const int8_t e = parser.value_byte();
+      if (e < EXTRUDERS) return e;
+      SERIAL_ECHO_START();
+      SERIAL_CHAR('M'); SERIAL_ECHO(parser.codenum);
+      SERIAL_ECHOLNPGM(" " STR_INVALID_EXTRUDER " ", e);
+      return -1;
+    }
+  #endif
   return active_extruder;
 }
 
@@ -153,7 +155,7 @@ int8_t GcodeSuite::get_target_e_stepper_from_command(const int8_t dval/*=-1*/) {
 }
 
 /**
- * Set XYZ...E destination and feedrate from the current GCode command
+ * Set XYZ...E destination and feedrate from the current G-Code command
  *
  *  - Set destination from included axis codes
  *  - Set to current for missing axis codes
@@ -163,7 +165,7 @@ void GcodeSuite::get_destination_from_command() {
   xyze_bool_t seen{false};
 
   #if ENABLED(CANCEL_OBJECTS)
-    const bool &skip_move = cancelable.skipping;
+    const bool &skip_move = cancelable.state.skipping;
   #else
     constexpr bool skip_move = false;
   #endif
@@ -198,9 +200,10 @@ void GcodeSuite::get_destination_from_command() {
   #endif
 
   if (parser.floatval('F') > 0) {
-    feedrate_mm_s = parser.value_feedrate();
+    const float fr_mm_min = parser.value_linear_units();
+    feedrate_mm_s = MMM_TO_MMS(fr_mm_min);
     // Update the cutter feed rate for use by M4 I set inline moves.
-    TERN_(LASER_FEATURE, cutter.feedrate_mm_m = MMS_TO_MMM(feedrate_mm_s));
+    TERN_(LASER_FEATURE, cutter.feedrate_mm_m = fr_mm_min);
   }
 
   #if ALL(PRINTCOUNTER, HAS_EXTRUDERS)
@@ -287,22 +290,27 @@ void GcodeSuite::dwell(millis_t time) {
 
   void GcodeSuite::G29_with_retry() {
     uint8_t retries = G29_MAX_RETRIES;
-    while (G29()) { // G29 should return true for failed probes ONLY
-      if (retries) {
-        event_probe_recover();
-        --retries;
-      }
-      else {
-        event_probe_failure();
-        return;
-      }
+    bool fail = false;
+    for (;;) {
+      fail = G29(); // G29 should return true for failed probes ONLY
+      if (!fail || !retries) break;
+      event_probe_recover();
+      --retries;
     }
 
-    TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_end());
+    if (fail) {
+      event_probe_failure();
+      TERN_(G29_HALT_ON_FAILURE, return);
+    }
+    else {
+      TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_end());
+      #ifdef G29_SUCCESS_COMMANDS
+        process_subcommands_now(F(G29_SUCCESS_COMMANDS));
+      #endif
+    }
 
-    #ifdef G29_SUCCESS_COMMANDS
-      process_subcommands_now(F(G29_SUCCESS_COMMANDS));
-    #endif
+    TERN_(HAS_DWIN_E3V2_BASIC, dwinLevelingDone());
+    TERN_(EXTENSIBLE_UI, ExtUI::onLevelingDone());
   }
 
 #endif // G29_RETRY_AND_RECOVER
@@ -343,7 +351,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 0: case 1:                                             // G0: Fast Move, G1: Linear Move
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
 
-      #if ENABLED(ARC_SUPPORT) && DISABLED(SCARA)
+      #if ENABLED(ARC_SUPPORT)
         case 2: case 3: G2_G3(parser.codenum == 2); break;        // G2: CW ARC, G3: CCW ARC
       #endif
 
@@ -459,7 +467,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       #if ENABLED(DEBUG_GCODE_PARSER)
-        case 800: parser.debug(); break;                          // G800: GCode Parser Test for G
+        case 800: parser.debug(); break;                          // G800: G-Code Parser Test for G
       #endif
 
       default: parser.unknown_command_warning(); break;
@@ -667,9 +675,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 87: M87(); break;                                    // M87: Cancel Hotend Idle Timeout
       #endif
 
-      case 92: M92(); break;                                      // M92: Set the steps-per-unit for one or more axes
+      #if ENABLED(EDITABLE_STEPS_PER_UNIT)
+        case 92: M92(); break;                                    // M92: Set the steps-per-unit for one or more axes
+      #endif
+
       case 114: M114(); break;                                    // M114: Report current position
-      case 115: M115(); break;                                    // M115: Report capabilities
+
+      #if ENABLED(CAPABILITIES_REPORT)
+        case 115: M115(); break;                                  // M115: Report capabilities
+      #endif
 
       case 117: TERN_(HAS_STATUS_MESSAGE, M117()); break;         // M117: Set LCD message text, if possible
 
@@ -715,7 +729,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 204: M204(); break;                                    // M204: Set acceleration
       case 205: M205(); break;                                    // M205: Set advanced settings
 
-      #if HAS_M206_COMMAND
+      #if HAS_HOME_OFFSET
         case 206: M206(); break;                                  // M206: Set home offsets
       #endif
 
@@ -727,6 +741,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
             if (MIN_AUTORETRACT <= MAX_AUTORETRACT) M209();       // M209: Turn Automatic Retract Detection on/off
             break;
         #endif
+      #endif
+
+      #if ENABLED(EDITABLE_HOMING_FEEDRATE)
+        case 210: M210(); break;                                  // M210: Set the homing feedrate
       #endif
 
       #if HAS_SOFTWARE_ENDSTOPS
@@ -793,7 +811,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 250: M250(); break;                                  // M250: Set LCD contrast
       #endif
 
-      #if HAS_GCODE_M255
+      #if ENABLED(EDITABLE_DISPLAY_TIMEOUT)
         case 255: M255(); break;                                  // M255: Set LCD Sleep/Backlight Timeout (Minutes)
       #endif
 
@@ -846,7 +864,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 402: M402(); break;                                  // M402: Stow probe
       #endif
 
-      #if HAS_PRUSA_MMU2
+      #if HAS_PRUSA_MMU2 || HAS_PRUSA_MMU3
         case 403: M403(); break;
       #endif
 
@@ -881,12 +899,16 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 425: M425(); break;                                  // M425: Tune backlash compensation
       #endif
 
-      #if HAS_M206_COMMAND
+      #if HAS_HOME_OFFSET
         case 428: M428(); break;                                  // M428: Apply current_position to home_offset
       #endif
 
       #if HAS_POWER_MONITOR
         case 430: M430(); break;                                  // M430: Read the system current (A), voltage (V), and power (W)
+      #endif
+
+      #if HAS_RS485_SERIAL
+        case 485: M485(); break;                                  // M485: Send RS485 packets
       #endif
 
       #if ENABLED(CANCEL_OBJECTS)
@@ -935,13 +957,19 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 575: M575(); break;                                  // M575: Set serial baudrate
       #endif
 
+      #if ENABLED(NONLINEAR_EXTRUSION)
+        case 592: M592(); break;                                  // M592: Nonlinear Extrusion control
+      #endif
+
       #if HAS_ZV_SHAPING
         case 593: M593(); break;                                  // M593: Input Shaping control
       #endif
 
       #if ENABLED(ADVANCED_PAUSE_FEATURE)
         case 600: M600(); break;                                  // M600: Pause for Filament Change
-        case 603: M603(); break;                                  // M603: Configure Filament Change
+        #if ENABLED(CONFIGURE_FILAMENT_CHANGE)
+          case 603: M603(); break;                                  // M603: Configure Filament Change
+        #endif
       #endif
 
       #if HAS_DUPLICATION_MODE
@@ -965,6 +993,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 702: M702(); break;                                  // M702: Unload Filament
       #endif
 
+      #if HAS_PRUSA_MMU3
+        case 704: M704(); break;                                  // M704: Preload to MMU
+        case 705: M705(); break;                                  // M705: Eject filament
+        case 706: M706(); break;                                  // M706: Cut filament
+        case 707: M707(); break;                                  // M707: Read from MMU register
+        case 708: M708(); break;                                  // M708: Write to MMU register
+        case 709: M709(); break;                                  // M709: MMU power & reset
+      #endif
+
       #if ENABLED(CONTROLLER_FAN_EDITABLE)
         case 710: M710(); break;                                  // M710: Set Controller Fan settings
       #endif
@@ -973,6 +1010,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 810: case 811: case 812: case 813: case 814:
         case 815: case 816: case 817: case 818: case 819:
         M810_819(); break;                                        // M810-M819: Define/execute G-code macro
+        case 820: M820(); break;                                  // M820: Report macros to serial output
       #endif
 
       #if HAS_BED_PROBE
@@ -1031,7 +1069,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       #if ENABLED(DEBUG_GCODE_PARSER)
-        case 800: parser.debug(); break;                          // M800: GCode Parser Test for M
+        case 800: parser.debug(); break;                          // M800: G-Code Parser Test for M
       #endif
 
       #if ENABLED(GCODE_REPEAT_MARKERS)
@@ -1089,6 +1127,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
       #if DGUS_LCD_UI_MKS
         case 1002: M1002(); break;                                // M1002: [INTERNAL] Tool-change and Relative E Move
+      #endif
+
+      #if ENABLED(ONE_CLICK_PRINT)
+        case 1003: M1003(); break;                                // M1003: [INTERNAL] Set the current dir to /
       #endif
 
       #if ENABLED(UBL_MESH_WIZARD)

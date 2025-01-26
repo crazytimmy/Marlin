@@ -47,7 +47,7 @@ namespace LanguageNarrow_el_gr {
   LSTR MSG_AUTO_HOME_X                    = _UxGT("Αρχικό σημείο X");
   LSTR MSG_AUTO_HOME_Y                    = _UxGT("Αρχικό σημείο Y");
   LSTR MSG_AUTO_HOME_Z                    = _UxGT("Αρχικό σημείο Z");
-  LSTR MSG_LEVEL_BED_HOMING               = _UxGT("Επαναφορά στο αρχικό σημείο ΧΥΖ");
+  LSTR MSG_LEVEL_BED_HOMING               = _UxGT("Επαναφορά στο αρχικό σημείο ΧΥZ");
   LSTR MSG_LEVEL_BED_WAITING              = _UxGT("Κάντε κλικ για να ξεκινήσετε");
   LSTR MSG_LEVEL_BED_NEXT_POINT           = _UxGT("Επόμενο σημείο");
   LSTR MSG_LEVEL_BED_DONE                 = _UxGT("Ολοκλήρωση επιπεδοποίησης!");
@@ -76,6 +76,7 @@ namespace LanguageNarrow_el_gr {
   LSTR MSG_EXTRUDE                        = _UxGT("Εξώθηση");
   LSTR MSG_RETRACT                        = _UxGT("Ανάσυρση");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Μετακίνηση άξονα");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Ανιχνευτής/ισοπέδωση");
   LSTR MSG_BED_LEVELING                   = _UxGT("Επιπεδοποίηση κλίνης");
   LSTR MSG_LEVEL_BED                      = _UxGT("Επιπεδοποίηση κλίνης");
   LSTR MSG_MOVE_X                         = _UxGT("Μετακίνηση X");
@@ -85,11 +86,8 @@ namespace LanguageNarrow_el_gr {
   LSTR MSG_MOVE_E                         = _UxGT("Εξωθητήρας");
   LSTR MSG_MOVE_EN                        = _UxGT("Εξωθητήρας *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Μετακίνηση $μμ");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Μετακίνηση 0,1 μμ");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Μετακίνηση 1 μμ");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Μετακίνηση 10 μμ");
-  LSTR MSG_MOVE_50MM                      = _UxGT("Μετακίνηση 50 μμ");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Μετακίνηση 100 μμ");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Μετακίνηση $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Μετακίνηση $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Ταχύτητα");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Κλίνη Z");
   LSTR MSG_NOZZLE                         = _UxGT("Ακροφύσιο");
@@ -172,19 +170,28 @@ namespace LanguageNarrow_el_gr {
   LSTR MSG_AUTORETRACT                    = _UxGT("Αυτόματη ανάσυρση");
   LSTR MSG_FILAMENTCHANGE                 = _UxGT("Αλλαγή νήματος");
   LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Αλλαγή νήματος *");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Προετοιμασία κάρτας SD");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Προετοιμασία SD");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Προετοιμασία USB");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Προετοιμασία SD");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Αλλαγή κάρτας SD");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Διερεύνηση Z εκτός κλίνης");
-  LSTR MSG_YX_UNHOMED                     = _UxGT("Επαναφορά Χ/Υ πριν από Ζ");
-  LSTR MSG_XYZ_UNHOMED                    = _UxGT("Επαναφορά ΧΥΖ πρώτα");
-  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Μετατόπιση Ζ");
+  LSTR MSG_YX_UNHOMED                     = _UxGT("Επαναφορά Χ/Υ πριν από Z");
+  LSTR MSG_XYZ_UNHOMED                    = _UxGT("Επαναφορά ΧΥZ πρώτα");
+  LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Μετατόπιση X");
+  LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Μετατόπιση Y");
+  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Μετατόπιση Z");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Μετατόπιση @");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Βήμα Z ρύθμιση");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Μικρό βήμα Χ");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Μικρό βήμα Υ");
-  LSTR MSG_BABYSTEP_Z                     = _UxGT("Μικρό βήμα Ζ");
+  LSTR MSG_BABYSTEP_Z                     = _UxGT("Μικρό βήμα Z");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Ματαίωση endstop ");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Ανεπιτυχής θέρμανση");
-  LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Λάθος: ΠΛΕΟΝΑΖΟΥΣΑ ΘΕΡΜΟΤΗΤΑ");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("ΔΙΑΦΥΓΗ ΘΕΡΜΟΤΗΤΑΣ");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Ανεπιτυχής θέρμανση");
+  LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Λάθος: ΠΛΕΟΝΑZΟΥΣΑ ΘΕΡΜΟΤΗΤΑ");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("ΔΙΑΦΥΓΗ ΘΕΡΜΟΤΗΤΑΣ");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Λάθος: ΜΕΓΙΣΤΗ ΘΕΡΜΟΤΗΤΑ");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Λάθος: ΕΛΑΧΙΣΤΗ ΘΕΡΜΟΤΗΤΑ");
   LSTR MSG_HEATING                        = _UxGT("Θερμαίνεται…");

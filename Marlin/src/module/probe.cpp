@@ -96,8 +96,6 @@
 
 #if ENABLED(EXTENSIBLE_UI)
   #include "../lcd/extui/ui_api.h"
-#elif ENABLED(DWIN_LCD_PROUI)
-  #include "../lcd/e3v2/proui/dwin.h"
 #endif
 
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
@@ -105,7 +103,7 @@
 
 Probe probe;
 
-xyz_pos_t Probe::offset; // Initialized by settings.load()
+xyz_pos_t Probe::offset; // Initialized by settings.load
 
 #if HAS_PROBE_XY_OFFSET
   const xy_pos_t &Probe::offset_xy = Probe::offset;
@@ -356,31 +354,35 @@ FORCE_INLINE void probe_specific_action(const bool deploy) {
     // Start preheating before waiting for user confirmation that the probe is ready.
     TERN_(PREHEAT_BEFORE_PROBING, if (deploy) probe.preheat_for_probing(0, PROBING_BED_TEMP, true));
 
-    FSTR_P const ds_str = deploy ? GET_TEXT_F(MSG_MANUAL_DEPLOY) : GET_TEXT_F(MSG_MANUAL_STOW);
+    FSTR_P const ds_fstr = deploy ? GET_TEXT_F(MSG_MANUAL_DEPLOY) : GET_TEXT_F(MSG_MANUAL_STOW);
     ui.return_to_status();       // To display the new status message
-    ui.set_max_status(ds_str);
+    ui.set_max_status(ds_fstr);  // Set a status message that won't be overwritten by the host
     SERIAL_ECHOLN(deploy ? GET_EN_TEXT_F(MSG_MANUAL_DEPLOY) : GET_EN_TEXT_F(MSG_MANUAL_STOW));
 
     OKAY_BUZZ();
 
     #if ENABLED(PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED)
+    {
       // Wait for the probe to be attached or detached before asking for explicit user confirmation
       // Allow the user to interrupt
-      {
-        KEEPALIVE_STATE(PAUSED_FOR_USER);
-        TERN_(HAS_RESUME_CONTINUE, wait_for_user = true);
-        while (deploy == PROBE_TRIGGERED() && TERN1(HAS_RESUME_CONTINUE, wait_for_user)) idle_no_sleep();
-        TERN_(HAS_RESUME_CONTINUE, wait_for_user = false);
-        OKAY_BUZZ();
-      }
+      KEEPALIVE_STATE(PAUSED_FOR_USER);
+      TERN_(HAS_RESUME_CONTINUE, wait_for_user = true);
+      while (deploy == PROBE_TRIGGERED() && TERN1(HAS_RESUME_CONTINUE, wait_for_user)) idle_no_sleep();
+      TERN_(HAS_RESUME_CONTINUE, wait_for_user = false);
+      OKAY_BUZZ();
+    }
     #endif
 
-    TERN_(HOST_PROMPT_SUPPORT, hostui.continue_prompt(ds_str));
-    TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(ds_str));
-    TERN_(DWIN_LCD_PROUI, dwinPopupConfirm(ICON_BLTouch, ds_str, FPSTR(CONTINUE_STR)));
+    TERN_(HOST_PROMPT_SUPPORT, hostui.continue_prompt(ds_fstr));
+    #if ENABLED(DWIN_LCD_PROUI)
+      ExtUI::onUserConfirmRequired(ICON_BLTouch, ds_fstr, FPSTR(CONTINUE_STR));
+    #elif ENABLED(EXTENSIBLE_UI)
+      ExtUI::onUserConfirmRequired(ds_fstr);
+    #endif
     TERN_(HAS_RESUME_CONTINUE, wait_for_user_response());
 
-    ui.reset_status();
+    ui.reset_alert_level();
+    //ui.reset_status();
 
   #endif // PAUSE_BEFORE_DEPLOY_STOW
 
@@ -597,12 +599,14 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   #endif
 
   #if ENABLED(BLTOUCH)
-    if (!bltouch.high_speed_mode && bltouch.deploy())
-      return true; // Deploy in LOW SPEED MODE on every probe action
+    // Ensure the BLTouch is deployed. (Does nothing if already deployed.)
+    // Don't deploy with high_speed_mode enabled. The probe already re-deploys itself.
+    if (TERN(MEASURE_BACKLASH_WHEN_PROBING, true, !bltouch.high_speed_mode) && bltouch.deploy())
+      return true;
   #endif
 
   #if HAS_Z_SERVO_PROBE && (ENABLED(Z_SERVO_INTERMEDIATE_STOW) || defined(Z_SERVO_MEASURE_ANGLE))
-    probe_specific_action(true);  //  Always re-deploy in this case
+    probe_specific_action(true);  // Always re-deploy in this case
   #endif
 
   // Disable stealthChop if used. Enable diag1 pin on driver.
@@ -612,8 +616,20 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
       if (test_sensitivity.x) stealth_states.x = tmc_enable_stallguard(stepperX); // Delta watches all DIAG pins for a stall
       if (test_sensitivity.y) stealth_states.y = tmc_enable_stallguard(stepperY);
     #endif
-    if (test_sensitivity.z) stealth_states.z = tmc_enable_stallguard(stepperZ);   // All machines will check Z-DIAG for stall
-    endstops.set_homing_current(true);                                            // The "homing" current also applies to probing
+    if (test_sensitivity.z) {
+      stealth_states.z = tmc_enable_stallguard(stepperZ);                         // All machines will check Z-DIAG for stall
+      #if ENABLED(Z_MULTI_ENDSTOPS)
+        stealth_states.z2 = tmc_enable_stallguard(stepperZ2);
+        #if NUM_Z_STEPPERS >= 3
+          stealth_states.z3 = tmc_enable_stallguard(stepperZ3);
+          #if NUM_Z_STEPPERS >= 4
+            stealth_states.z4 = tmc_enable_stallguard(stepperZ4);
+          #endif
+        #endif
+      #endif
+    }
+    TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(true));
+
     endstops.enable(true);
   #endif // SENSORLESS_PROBING
 
@@ -645,9 +661,20 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
       if (test_sensitivity.x) tmc_disable_stallguard(stepperX, stealth_states.x);
       if (test_sensitivity.y) tmc_disable_stallguard(stepperY, stealth_states.y);
     #endif
-    if (test_sensitivity.z) tmc_disable_stallguard(stepperZ, stealth_states.z);
-    endstops.set_homing_current(false);
-  #endif
+    if (test_sensitivity.z) {
+      tmc_disable_stallguard(stepperZ, stealth_states.z);
+      #if ENABLED(Z_MULTI_ENDSTOPS)
+        tmc_disable_stallguard(stepperZ2, stealth_states.z2);
+        #if NUM_Z_STEPPERS >= 3
+          tmc_disable_stallguard(stepperZ3, stealth_states.z3);
+          #if NUM_Z_STEPPERS >= 4
+            tmc_disable_stallguard(stepperZ4, stealth_states.z4);
+          #endif
+        #endif
+      #endif
+    }
+    TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(false));
+  #endif // SENSORLESS_PROBING
 
   #if ENABLED(BLTOUCH)
     if (probe_triggered && !bltouch.high_speed_mode && bltouch.stow())
@@ -715,7 +742,7 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
  *
  * @param sanity_check Flag to compare the probe result with the expected result
  *                     based on the probe Z offset. If the result is too far away
- *                     (more than 2mm too early) then consider it an error.
+ *                     (more than Z_PROBE_ERROR_TOLERANCE too early) then throw an error.
  * @param z_min_point Override the minimum probing height (-2mm), to allow deeper probing.
  * @param z_clearance Z clearance to apply on probe failure.
  *
@@ -727,7 +754,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/, const_float_t z_min_p
   const float zoffs = SUM_TERN(HAS_HOTEND_OFFSET, -offset.z, hotend_offset[active_extruder].z);
 
   auto try_to_probe = [&](PGM_P const plbl, const_float_t z_probe_low_point, const feedRate_t fr_mm_s, const bool scheck) -> bool {
-    constexpr float error_tolerance = 2.0f;
+    constexpr float error_tolerance = Z_PROBE_ERROR_TOLERANCE;
     if (DEBUGGING(LEVELING)) {
       DEBUG_ECHOPGM_P(plbl);
       DEBUG_ECHOLNPGM("> try_to_probe(..., ", z_probe_low_point, ", ", fr_mm_s, ", ...)");
@@ -912,10 +939,15 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/, const_float_t z_min_p
  * with the previously active tool.
  *
  */
-float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/,
-  const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/, const bool sanity_check/*=true*/,
-  const_float_t z_min_point/*=Z_PROBE_LOW_POINT*/, const_float_t z_clearance/*=Z_TWEEN_SAFE_CLEARANCE*/,
-  const bool raise_after_is_relative/*=false*/
+float Probe::probe_at_point(
+  const_float_t rx, const_float_t ry,
+  const ProbePtRaise raise_after,     // = PROBE_PT_NONE
+  const uint8_t verbose_level,        // = 0
+  const bool probe_relative,          // = true
+  const bool sanity_check,            // = true
+  const_float_t z_min_point,          // = Z_PROBE_LOW_POINT
+  const_float_t z_clearance,          // = Z_TWEEN_SAFE_CLEARANCE
+  const bool raise_after_is_rel       // = false
 ) {
   DEBUG_SECTION(log_probe, "Probe::probe_at_point", DEBUGGING(LEVELING));
 
@@ -928,11 +960,6 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     );
     DEBUG_POS("", current_position);
   }
-
-  #if ENABLED(BLTOUCH)
-    // Reset a BLTouch in HS mode if already triggered
-    if (bltouch.high_speed_mode && bltouch.triggered()) bltouch._reset();
-  #endif
 
   // Use a safe Z height for the XY move
   const float safe_z = _MAX(current_position.z, z_clearance);
@@ -958,13 +985,27 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   // Move the probe to the starting XYZ
   do_blocking_move_to(npos, feedRate_t(XY_PROBE_FEEDRATE_MM_S));
 
+  // Change Z motor current to homing current
+  TERN_(PROBING_USE_CURRENT_HOME, set_homing_current(Z_AXIS));
+
+  float measured_z;
+
   #if ENABLED(BD_SENSOR)
 
-    return current_position.z - bdl.read(); // Difference between Z-home-relative Z and sensor reading
+    safe_delay(4);
+
+    measured_z = current_position.z - bdl.read(); // Difference between Z-home-relative Z and sensor reading
 
   #else // !BD_SENSOR
 
-    float measured_z = deploy() ? NAN : run_z_probe(sanity_check, z_min_point, z_clearance) + offset.z;
+    #if ENABLED(BLTOUCH)
+      // Now at the safe_z if it is still triggered it may be in an alarm
+      // condition.  Reset to clear alarm has a side effect of stowing the probe,
+      // which the following deploy will handle.
+      if (bltouch.triggered()) bltouch._reset();
+    #endif
+
+    measured_z = deploy() ? NAN : run_z_probe(sanity_check, z_min_point, z_clearance) + offset.z;
 
     // Deploy succeeded and a successful measurement was done.
     // Raise and/or stow the probe depending on 'raise_after' and settings.
@@ -972,8 +1013,8 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
       switch (raise_after) {
         default: break;
         case PROBE_PT_RAISE:
-          if (raise_after_is_relative)
-            do_z_clearance(current_position.z + z_clearance, false);
+          if (raise_after_is_rel)
+            do_z_clearance_by(z_clearance);
           else
             do_z_clearance(z_clearance);
           break;
@@ -985,6 +1026,10 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
 
     // If any error occurred stow the probe and set an alert
     if (isnan(measured_z)) {
+      // TODO: Disable steppers (unless G29_RETRY_AND_RECOVER or G29_HALT_ON_FAILURE are set).
+      // Something definitely went wrong at this point, so it might be a good idea to release the steppers.
+      // The user may want to quickly move the carriage or bed by hand to avoid bed damage from the (hot) nozzle.
+      // This would also benefit from the contemplated "Audio Alerts" feature.
       stow();
       LCD_MESSAGE(MSG_LCD_PROBING_FAILED);
       #if DISABLED(G29_RETRY_AND_RECOVER)
@@ -998,9 +1043,12 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
         SERIAL_ECHOLNPGM("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
     }
 
-    return measured_z;
-
   #endif // !BD_SENSOR
+
+  // Restore the Z homing current
+  TERN_(PROBING_USE_CURRENT_HOME, restore_homing_current(Z_AXIS));
+
+  return measured_z;
 }
 
 #if HAS_Z_SERVO_PROBE

@@ -23,13 +23,8 @@
 
 #include "../inc/MarlinConfigPre.h"
 
-#if ENABLED(INTEGRATED_BABYSTEPPING)
-  #define BABYSTEPS_PER_SEC 1000UL
-  #define BABYSTEP_TICKS ((STEPPER_TIMER_RATE) / (BABYSTEPS_PER_SEC))
-#else
-  #define BABYSTEPS_PER_SEC 976UL
-  #define BABYSTEP_TICKS ((TEMP_TIMER_RATE) / (BABYSTEPS_PER_SEC))
-#endif
+#define BABYSTEPS_PER_SEC 1000UL
+#define BABYSTEP_TICKS ((STEPPER_TIMER_RATE) / (BABYSTEPS_PER_SEC))
 
 #if ANY(IS_CORE, BABYSTEP_XY, I2C_POSITION_ENCODERS)
   #define BS_AXIS_IND(A) A
@@ -64,6 +59,7 @@ public:
     }
   #endif
 
+  static bool can_babystep(const AxisEnum axis);
   static void add_steps(const AxisEnum axis, const int16_t distance);
   static void add_mm(const AxisEnum axis, const_float_t mm);
 

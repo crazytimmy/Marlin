@@ -41,7 +41,9 @@
   #include "../feature/fancheck.h"
 #endif
 
-#define HOTEND_INDEX TERN(HAS_MULTI_HOTEND, e, 0)
+//#define ERR_INCLUDE_TEMP
+
+#define HOTEND_INDEX TERN0(HAS_MULTI_HOTEND, e)
 #define E_NAME TERN_(HAS_MULTI_HOTEND, e)
 
 #if HAS_FAN
@@ -159,12 +161,14 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
   #define scalePID_d(d)   ( float(d) / PID_dT )
   #define unscalePID_d(d) ( float(d) * PID_dT )
 
-  /// @brief The default PID class, only has Kp, Ki, Kd, other classes extend this one
-  /// @tparam MIN_POW output when current is above target by functional_range
-  /// @tparam MAX_POW output when current is below target by functional_range
-  /// @details This class has methods for Kc and Kf terms, but returns constant default values
-  /// PID classes that implement these features are expected to override these methods
-  /// Since the finally used PID class is typedef-d, there is no need to use virtual functions
+  /**
+   * @brief The default PID class, only has Kp, Ki, Kd, other classes extend this one
+   * @tparam MIN_POW output when current is above target by functional_range
+   * @tparam MAX_POW output when current is below target by functional_range
+   * @details This class has methods for Kc and Kf terms, but returns constant default values.
+   *          PID classes that implement these features are expected to override these methods.
+   *          Since the eventual PID class is typedef-d, there is no need to use virtual functions.
+   */
   template<int MIN_POW, int MAX_POW>
   struct PID_t {
     protected:
@@ -202,31 +206,35 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
 
       float get_pid_output(const float target, const float current) {
         const float pid_error = target - current;
+        float output_pow;
         if (!target || pid_error < -(PID_FUNCTIONAL_RANGE)) {
           pid_reset = true;
-          return 0;
+          output_pow = 0;
         }
         else if (pid_error > PID_FUNCTIONAL_RANGE) {
           pid_reset = true;
-          return MAX_POW;
+          output_pow = MAX_POW;
         }
+        else {
+          if (pid_reset) {
+            pid_reset = false;
+            temp_iState = 0.0;
+            work_d = 0.0;
+          }
 
-        if (pid_reset) {
-          pid_reset = false;
-          temp_iState = 0.0;
-          work_d = 0.0;
+          const float max_power_over_i_gain = float(MAX_POW) / Ki - float(MIN_POW);
+          temp_iState = constrain(temp_iState + pid_error, 0, max_power_over_i_gain);
+
+          work_p = Kp * pid_error;
+          work_i = Ki * temp_iState;
+          work_d = work_d + PID_K2 * (Kd * (temp_dState - current) - work_d);
+
+          output_pow = constrain(work_p + work_i + work_d + float(MIN_POW), 0, MAX_POW);
         }
-
-        const float max_power_over_i_gain = float(MAX_POW) / Ki - float(MIN_POW);
-        temp_iState = constrain(temp_iState + pid_error, 0, max_power_over_i_gain);
-
-        work_p = Kp * pid_error;
-        work_i = Ki * temp_iState;
-        work_d = work_d + PID_K2 * (Kd * (temp_dState - current) - work_d);
 
         temp_dState = current;
 
-        return constrain(work_p + work_i + work_d + float(MIN_POW), 0, MAX_POW);
+        return output_pow;
       }
 
   };
@@ -235,7 +243,7 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
 
 #if ENABLED(PIDTEMP)
 
-  /// @brief Extrusion scaled PID class
+  // @brief Extrusion scaled PID class
   template<int MIN_POW, int MAX_POW, int LPQ_ARR_SZ>
   struct PIDC_t : public PID_t<MIN_POW, MAX_POW> {
     private:
@@ -287,11 +295,11 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
       }
   };
 
-  /// @brief Fan scaled PID, this class implements the get_fan_scale_output() method
-  /// @tparam MIN_POW @see PID_t
-  /// @tparam MAX_POW @see PID_t
-  /// @tparam SCALE_MIN_SPEED parameter from Configuration_adv.h
-  /// @tparam SCALE_LIN_FACTOR parameter from Configuration_adv.h
+  // @brief Fan scaled PID, this class implements the get_fan_scale_output() method
+  // @tparam MIN_POW @see PID_t
+  // @tparam MAX_POW @see PID_t
+  // @tparam SCALE_MIN_SPEED parameter from Configuration_adv.h
+  // @tparam SCALE_LIN_FACTOR parameter from Configuration_adv.h
   template<int MIN_POW, int MAX_POW, int SCALE_MIN_SPEED, int SCALE_LIN_FACTOR>
   struct PIDF_t : public PID_t<MIN_POW, MAX_POW> {
     private:
@@ -321,7 +329,7 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
       }
   };
 
-  /// @brief Inherits PID and PIDC - can't use proper diamond inheritance w/o virtual
+  // @brief Inherits PID and PIDC - can't use proper diamond inheritance w/o virtual
   template<int MIN_POW, int MAX_POW, int LPQ_ARR_SZ, int SCALE_MIN_SPEED, int SCALE_LIN_FACTOR>
   struct PIDCF_t : public PIDC_t<MIN_POW, MAX_POW, LPQ_ARR_SZ> {
     private:
@@ -429,12 +437,15 @@ typedef struct HeaterInfo : public TempInfo {
   uint8_t soft_pwm_amount;
   bool is_below_target(const celsius_t offs=0) const { return (target - celsius > offs); } // celsius < target - offs
   bool is_above_target(const celsius_t offs=0) const { return (celsius - target > offs); } // celsius > target + offs
+  #if ENABLED(PELTIER_BED)
+    bool peltier_dir_heating; // = false
+  #endif
 } heater_info_t;
 
 // A heater with PID stabilization
 template<typename T>
 struct PIDHeaterInfo : public HeaterInfo {
-  T pid;  // Initialized by settings.load()
+  T pid;  // Initialized by settings.load
 };
 
 #if ENABLED(MPCTEMP)
@@ -520,6 +531,9 @@ struct HeaterWatch {
   typedef struct HeaterWatch<WATCH_COOLER_TEMP_INCREASE, TEMP_COOLER_HYSTERESIS, WATCH_COOLER_TEMP_PERIOD> cooler_watch_t;
 #endif
 
+// Just raw temperature sensor ranges
+typedef struct { raw_adc_t raw_min, raw_max; } temp_raw_range_t;
+
 // Temperature sensor read value ranges
 typedef struct { raw_adc_t raw_min, raw_max; celsius_t mintemp, maxtemp; } temp_range_t;
 
@@ -592,7 +606,7 @@ class Temperature {
     #if HAS_HOTEND
       static hotend_info_t temp_hotend[HOTENDS];
       static constexpr celsius_t hotend_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP, HEATER_5_MAXTEMP, HEATER_6_MAXTEMP, HEATER_7_MAXTEMP);
-      static celsius_t hotend_max_target(const uint8_t e) { return hotend_maxtemp[e] - (HOTEND_OVERSHOOT); }
+      static constexpr celsius_t hotend_max_target(const uint8_t e) { return hotend_maxtemp[e] - (HOTEND_OVERSHOOT); }
     #endif
 
     #if HAS_HEATED_BED
@@ -697,7 +711,7 @@ class Temperature {
 
       // Convert the given heater_id_t to idle array index
       static IdleIndex idle_index_for_id(const int8_t heater_id) {
-        TERN_(HAS_HEATED_BED, if (heater_id == H_BED) return IDLE_INDEX_BED);
+        OPTCODE(HAS_HEATED_BED, if (heater_id == H_BED) return IDLE_INDEX_BED)
         return (IdleIndex)_MAX(heater_id, 0);
       }
 
@@ -725,6 +739,7 @@ class Temperature {
     #endif
 
     #if HAS_HOTEND
+      // Sensor ranges, not user-configured
       static temp_range_t temp_range[HOTENDS];
     #endif
 
@@ -735,7 +750,7 @@ class Temperature {
       #if DISABLED(PIDTEMPBED)
         static millis_t next_bed_check_ms;
       #endif
-      static raw_adc_t mintemp_raw_BED, maxtemp_raw_BED;
+      static temp_raw_range_t temp_sensor_range_bed;
     #endif
 
     #if HAS_HEATED_CHAMBER
@@ -745,7 +760,7 @@ class Temperature {
       #if DISABLED(PIDTEMPCHAMBER)
         static millis_t next_chamber_check_ms;
       #endif
-      static raw_adc_t mintemp_raw_CHAMBER, maxtemp_raw_CHAMBER;
+      static temp_raw_range_t temp_sensor_range_chamber;
     #endif
 
     #if HAS_COOLER
@@ -753,11 +768,11 @@ class Temperature {
         static cooler_watch_t watch_cooler;
       #endif
       static millis_t next_cooler_check_ms, cooler_fan_flush_ms;
-      static raw_adc_t mintemp_raw_COOLER, maxtemp_raw_COOLER;
+      static temp_raw_range_t temp_sensor_range_cooler;
     #endif
 
     #if ALL(HAS_TEMP_BOARD, THERMAL_PROTECTION_BOARD)
-      static raw_adc_t mintemp_raw_BOARD, maxtemp_raw_BOARD;
+      static temp_raw_range_t temp_sensor_range_board;
     #endif
 
     #if ALL(HAS_TEMP_SOC, THERMAL_PROTECTION_SOC)
@@ -1015,12 +1030,12 @@ class Temperature {
         #endif
       #endif
 
-      static bool still_heating(const uint8_t e) {
-        return degTargetHotend(e) > TEMP_HYSTERESIS && ABS(wholeDegHotend(e) - degTargetHotend(e)) > TEMP_HYSTERESIS;
-      }
-
       static bool degHotendNear(const uint8_t e, const celsius_t temp) {
         return ABS(wholeDegHotend(e) - temp) < (TEMP_HYSTERESIS);
+      }
+
+      static bool still_heating(const uint8_t e) {
+        return degTargetHotend(e) > TEMP_HYSTERESIS && !degHotendNear(e, degTargetHotend(e));
       }
 
       // Start watching a Hotend to make sure it's really heating up
@@ -1050,7 +1065,7 @@ class Temperature {
       }
 
       // Start watching the Bed to make sure it's really heating up
-      static void start_watching_bed() { TERN_(WATCH_BED, watch_bed.restart(degBed(), degTargetBed())); }
+      static void start_watching_bed() { OPTCODE(WATCH_BED, watch_bed.restart(degBed(), degTargetBed())) }
 
       static void setTargetBed(const celsius_t celsius) {
         #if PREHEAT_TIME_BED_MS > 0
@@ -1106,7 +1121,7 @@ class Temperature {
         start_watching_chamber();
       }
       // Start watching the Chamber to make sure it's really heating up
-      static void start_watching_chamber() { TERN_(WATCH_CHAMBER, watch_chamber.restart(degChamber(), degTargetChamber())); }
+      static void start_watching_chamber() { OPTCODE(WATCH_CHAMBER, watch_chamber.restart(degChamber(), degTargetChamber())) }
     #endif
 
     #if HAS_TEMP_COOLER
@@ -1156,7 +1171,7 @@ class Temperature {
         start_watching_cooler();
       }
       // Start watching the Cooler to make sure it's really cooling down
-      static void start_watching_cooler() { TERN_(WATCH_COOLER, watch_cooler.restart(degCooler(), degTargetCooler())); }
+      static void start_watching_cooler() { OPTCODE(WATCH_COOLER, watch_cooler.restart(degCooler(), degTargetCooler())) }
     #endif
 
     /**
@@ -1191,8 +1206,10 @@ class Temperature {
       static constexpr bool adaptive_fan_slowing = true;
     #endif
 
+    static bool tuning_idle(const millis_t &ms);
+
     /**
-     * Perform auto-tuning for hotend or bed in response to M303
+     * M303 PID auto-tuning for hotends or bed
      */
     #if HAS_PID_HEATING
 
@@ -1217,6 +1234,9 @@ class Temperature {
 
     #endif // HAS_PID_HEATING
 
+    /**
+     * M306 MPC auto-tuning for hotends
+     */
     #if ENABLED(MPC_AUTOTUNE)
 
       // Utility class to perform MPCTEMP auto tuning measurements
@@ -1333,14 +1353,15 @@ class Temperature {
 
     // MAX Thermocouples
     #if HAS_MAX_TC
-      #define MAX_TC_COUNT TEMP_SENSOR_IS_MAX_TC(0) + TEMP_SENSOR_IS_MAX_TC(1) + TEMP_SENSOR_IS_MAX_TC(REDUNDANT)
+      #define MAX_TC_COUNT TEMP_SENSOR_IS_MAX_TC(0) + TEMP_SENSOR_IS_MAX_TC(1) + TEMP_SENSOR_IS_MAX_TC(2) + TEMP_SENSOR_IS_MAX_TC(REDUNDANT)
       #if MAX_TC_COUNT > 1
         #define HAS_MULTI_MAX_TC 1
-        #define READ_MAX_TC(N) read_max_tc(N)
-      #else
-        #define READ_MAX_TC(N) read_max_tc()
       #endif
+      #define READ_MAX_TC(N) read_max_tc(TERN_(HAS_MULTI_MAX_TC, N))
       static raw_adc_t read_max_tc(TERN_(HAS_MULTI_MAX_TC, const uint8_t hindex=0));
+    #endif
+    #if TEMP_SENSOR_IS_MAX_TC(BED)
+      static raw_adc_t read_max_tc_bed();
     #endif
 
     #if HAS_AUTO_FAN
@@ -1360,9 +1381,13 @@ class Temperature {
       static float get_pid_output_chamber();
     #endif
 
-    static void _temp_error(const heater_id_t e, FSTR_P const serial_msg, FSTR_P const lcd_msg);
-    static void mintemp_error(const heater_id_t e);
-    static void maxtemp_error(const heater_id_t e);
+    static void _temp_error(const heater_id_t e, FSTR_P const serial_msg, FSTR_P const lcd_msg OPTARG(ERR_INCLUDE_TEMP, const celsius_float_t deg));
+    static void mintemp_error(const heater_id_t e OPTARG(ERR_INCLUDE_TEMP, const celsius_float_t deg));
+    static void maxtemp_error(const heater_id_t e OPTARG(ERR_INCLUDE_TEMP, const celsius_float_t deg));
+
+    #define _TEMP_ERROR(e, m, l, d) _temp_error(heater_id_t(e), m, GET_TEXT_F(l) OPTARG(ERR_INCLUDE_TEMP, d))
+    #define MINTEMP_ERROR(e, d) mintemp_error(heater_id_t(e) OPTARG(ERR_INCLUDE_TEMP, d))
+    #define MAXTEMP_ERROR(e, d) maxtemp_error(heater_id_t(e) OPTARG(ERR_INCLUDE_TEMP, d))
 
     #define HAS_THERMAL_PROTECTION ANY(THERMAL_PROTECTION_HOTENDS, THERMAL_PROTECTION_CHAMBER, THERMAL_PROTECTION_BED, THERMAL_PROTECTION_COOLER)
 
@@ -1384,9 +1409,9 @@ class Temperature {
 
       // Convert the given heater_id_t to runaway state array index
       static RunawayIndex runaway_index_for_id(const int8_t heater_id) {
-        TERN_(THERMAL_PROTECTION_CHAMBER, if (heater_id == H_CHAMBER) return RUNAWAY_IND_CHAMBER);
-        TERN_(THERMAL_PROTECTION_COOLER,  if (heater_id == H_COOLER)  return RUNAWAY_IND_COOLER);
-        TERN_(THERMAL_PROTECTION_BED,     if (heater_id == H_BED)     return RUNAWAY_IND_BED);
+        OPTCODE(THERMAL_PROTECTION_CHAMBER, if (heater_id == H_CHAMBER) return RUNAWAY_IND_CHAMBER)
+        OPTCODE(THERMAL_PROTECTION_COOLER,  if (heater_id == H_COOLER)  return RUNAWAY_IND_COOLER)
+        OPTCODE(THERMAL_PROTECTION_BED,     if (heater_id == H_BED)     return RUNAWAY_IND_BED)
         return (RunawayIndex)_MAX(heater_id, 0);
       }
 

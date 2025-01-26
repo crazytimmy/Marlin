@@ -75,6 +75,7 @@ namespace LanguageNarrow_ca {
   LSTR MSG_EXTRUDE                        = _UxGT("Extrudeix");
   LSTR MSG_RETRACT                        = _UxGT("Retreu");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Mou eixos");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Sonda i anivella");
   LSTR MSG_BED_LEVELING                   = _UxGT("Anivella llit");
   LSTR MSG_LEVEL_BED                      = _UxGT("Anivella llit");
 
@@ -87,11 +88,8 @@ namespace LanguageNarrow_ca {
   LSTR MSG_MOVE_E                         = _UxGT("Extrusor");
   LSTR MSG_MOVE_EN                        = _UxGT("Extrusor *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Mou $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Mou 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Mou 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Mou 10mm");
-  LSTR MSG_MOVE_50MM                      = _UxGT("Mou 50mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Mou 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Mou $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Mou $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Velocitat");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Llit Z");
   LSTR MSG_NOZZLE                         = _UxGT("Nozzle");
@@ -147,20 +145,29 @@ namespace LanguageNarrow_ca {
   LSTR MSG_AUTORETRACT                    = _UxGT("Auto retraccio");
   LSTR MSG_FILAMENTCHANGE                 = _UxGT("Canvia filament");
   LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Canvia filament *");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Inicialitza SD");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Inicialitza SD");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Inicialitza USB");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Inicialitza SD");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Canvia SD");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Sonda Z fora");
   LSTR MSG_BLTOUCH_RESET                  = _UxGT("Reinicia BLTouch");
   LSTR MSG_HOME_FIRST                     = _UxGT("Home %s primer");
+  LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Decalatge X");
+  LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Decalatge Y");
   LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Decalatge Z");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Decalatge @");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Pas a pas el Z");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Micropas X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Micropas Y");
   LSTR MSG_BABYSTEP_Z                     = _UxGT("Micropas Z");
   LSTR MSG_BABYSTEP_N                     = _UxGT("Micropas @");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Cancel. Endstop");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Error al escalfar");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Error al escalfar");
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Err: TEMP REDUNDANT");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("THERMAL RUNAWAY");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("THERMAL RUNAWAY");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Err: TEMP MAXIMA");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Err: TEMP MINIMA");
   LSTR MSG_HALTED                         = _UxGT("IMPRESSORA PARADA");

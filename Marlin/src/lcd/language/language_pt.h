@@ -75,6 +75,7 @@ namespace LanguageNarrow_pt {
   LSTR MSG_EXTRUDE                        = _UxGT("Extrudir");
   LSTR MSG_RETRACT                        = _UxGT("Retrair");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Mover eixo");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Calibrar e nivelar");
   LSTR MSG_MOVE_X                         = _UxGT("Mover X");
   LSTR MSG_MOVE_Y                         = _UxGT("Mover Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Mover Z");
@@ -82,10 +83,8 @@ namespace LanguageNarrow_pt {
   LSTR MSG_MOVE_E                         = _UxGT("Mover Extrusor");
   LSTR MSG_MOVE_EN                        = _UxGT("Mover Extrusor *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Mover $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Mover 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Mover 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Mover 10mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Mover 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Mover $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Mover $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Velocidade");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Base Z");
   LSTR MSG_NOZZLE                         = " " LCD_STR_THERMOMETER _UxGT(" Bico");
@@ -143,12 +142,21 @@ namespace LanguageNarrow_pt {
   LSTR MSG_AUTORETRACT                    = _UxGT(" Auto-Retract");
   LSTR MSG_FILAMENTCHANGE                 = _UxGT("Trocar filamento");
   LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Trocar filamento *");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Inici. cartão SD");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Inici. cartão SD");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Inici. flash USB");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Inici. cartão SD");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Trocar cartão SD");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Sensor fora/base");
+  LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Desvio X");
+  LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Desvio Y");
   LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Desvio Z");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Desvio @");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Passo Z ajuste");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Fim de curso");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Aquecimento falhou");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Aquecimento falhou");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Err: T Máxima");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Err: T Mínima");
   LSTR MSG_HEATING                        = _UxGT("Aquecendo...");

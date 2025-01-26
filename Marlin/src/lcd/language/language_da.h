@@ -69,6 +69,7 @@ namespace LanguageNarrow_da {
   LSTR MSG_SWITCH_PS_OFF                  = _UxGT("Slå strøm fra");
   LSTR MSG_EXTRUDE                        = _UxGT("Extruder");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Flyt akser");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Probe og nivellér");
   LSTR MSG_BED_LEVELING                   = _UxGT("Juster bed");
   LSTR MSG_LEVEL_BED                      = _UxGT("Juster bed");
   LSTR MSG_MOVE_X                         = _UxGT("Flyt X");
@@ -78,11 +79,8 @@ namespace LanguageNarrow_da {
   LSTR MSG_MOVE_E                         = _UxGT("Flyt E");
   LSTR MSG_MOVE_EN                        = _UxGT("Flyt *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Flyt $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Flyt 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Flyt 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Flyt 10mm");
-  LSTR MSG_MOVE_50MM                      = _UxGT("Flyt 50mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Flyt 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Flyt $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Flyt $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Hastighed");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Plade Z");
   LSTR MSG_NOZZLE                         = _UxGT("Dyse");
@@ -139,9 +137,10 @@ namespace LanguageNarrow_da {
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Probe udenfor plade");
   LSTR MSG_BLTOUCH_SELFTEST               = _UxGT("BLTouch Selv-Test");
   LSTR MSG_HOME_FIRST                     = _UxGT("Home %s først");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Opvarmning fejlet");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Justér Z trin");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Opvarmning fejlet");
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Fejl: reserve temp");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("Temp løber løbsk");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("Temp løber løbsk");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Fejl: Maks temp");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Fejl: Min temp");
   LSTR MSG_HALTED                         = _UxGT("PRINTER STOPPET");

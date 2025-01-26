@@ -137,10 +137,8 @@
 //
 // Probe enable
 //
-#if ENABLED(PROBE_ENABLE_DISABLE)
-  #ifndef PROBE_ENABLE_PIN
-    #define PROBE_ENABLE_PIN          SERVO0_PIN
-  #endif
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
 #endif
 
 //
@@ -307,19 +305,10 @@
   // Software serial
   //
   #define X_SERIAL_TX_PIN                   PE0
-  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
-
   #define Y_SERIAL_TX_PIN                   PD3
-  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
-
   #define Z_SERIAL_TX_PIN                   PD0
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
-
   #define E0_SERIAL_TX_PIN                  PC6
-  #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
-
   #define E1_SERIAL_TX_PIN                  PD12
-  #define E1_SERIAL_RX_PIN      E1_SERIAL_TX_PIN
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
@@ -368,8 +357,7 @@
 // Must use soft SPI because Marlin's default hardware SPI is tied to LCD's EXP2
 //
 #if SD_CONNECTION_IS(LCD)
-  #define SDSS                       EXP2_04_PIN
-  #define SD_SS_PIN                         SDSS
+  #define SD_SS_PIN                  EXP2_04_PIN
   #define SD_SCK_PIN                 EXP2_02_PIN
   #define SD_MISO_PIN                EXP2_01_PIN
   #define SD_MOSI_PIN                EXP2_06_PIN
@@ -402,7 +390,6 @@
     #define E2_CS_PIN                EXP1_06_PIN
     #if HAS_TMC_UART
       #define E2_SERIAL_TX_PIN       EXP1_06_PIN
-      #define E2_SERIAL_RX_PIN       EXP1_06_PIN
     #endif
   #endif
 
@@ -415,7 +402,6 @@
     #define E3_CS_PIN                EXP1_04_PIN
     #if HAS_TMC_UART
       #define E3_SERIAL_TX_PIN       EXP1_04_PIN
-      #define E3_SERIAL_RX_PIN       EXP1_04_PIN
     #endif
   #else
     #define E3_ENABLE_PIN            EXP2_07_PIN
@@ -430,7 +416,6 @@
     #define E4_CS_PIN                EXP1_02_PIN
     #if HAS_TMC_UART
       #define E4_SERIAL_TX_PIN       EXP1_02_PIN
-      #define E4_SERIAL_RX_PIN       EXP1_02_PIN
     #endif
   #else
     #define E4_ENABLE_PIN            EXP2_07_PIN
@@ -439,8 +424,9 @@
 #endif // BTT_MOTOR_EXPANSION
 
 //
-// LCDs and Controllers
+// LCD / Controller
 //
+
 #if IS_TFTGLCD_PANEL
 
   #if ENABLED(TFTGLCD_PANEL_SPI)
@@ -516,21 +502,62 @@
 
 #if HAS_SPI_TFT
 
+  #define TFT_SCK_PIN                EXP2_02_PIN
+  #define TFT_MISO_PIN               EXP2_01_PIN
+  #define TFT_MOSI_PIN               EXP2_06_PIN
+
   #define BTN_ENC                    EXP1_02_PIN
   #define BTN_EN1                    EXP2_03_PIN
   #define BTN_EN2                    EXP2_05_PIN
 
+  #ifndef TFT_WIDTH
+    #define TFT_WIDTH                        480
+  #endif
+  #ifndef TFT_HEIGHT
+    #define TFT_HEIGHT                       320
+  #endif
+
   #if ENABLED(BTT_TFT35_SPI_V1_0)
-    // 480x320, 3.5", SPI Display with Rotary Encoder.
-    // Stock Display for the BIQU B1 SE.
+
+    /**
+     *            ------                       ------
+     *    BEEPER | 1  2 | LCD-BTN        MISO | 1  2 | CLK
+     *    T_MOSI | 3  4 | T_CS       LCD-ENCA | 3  4 | TFTCS
+     *     T_CLK | 5  6   T_MISO     LCD-ENCB | 5  6   MOSI
+     *    PENIRQ | 7  8 | F_CS             RS | 7  8 | RESET
+     *       GND | 9 10 | VCC             GND | 9 10 | NC
+     *            ------                       ------
+     *             EXP1                         EXP2
+     *
+     * 480x320, 3.5", SPI Display with Rotary Encoder.
+     * Stock Display for the BIQU B1 SE Series.
+     * Schematic: https://github.com/bigtreetech/TFT35-SPI/blob/master/v1/Hardware/BTT%20TFT35-SPI%20V1-SCH.pdf
+     */
     #define TFT_CS_PIN               EXP2_04_PIN
-    #define TFT_A0_PIN               EXP2_07_PIN
+    #define TFT_DC_PIN               EXP2_07_PIN
+    #define TFT_A0_PIN                TFT_DC_PIN
 
     #define TOUCH_CS_PIN             EXP1_04_PIN
     #define TOUCH_SCK_PIN            EXP1_05_PIN
     #define TOUCH_MISO_PIN           EXP1_06_PIN
     #define TOUCH_MOSI_PIN           EXP1_03_PIN
     #define TOUCH_INT_PIN            EXP1_07_PIN
+
+    #ifndef TOUCH_CALIBRATION_X
+      #define TOUCH_CALIBRATION_X          17540
+    #endif
+    #ifndef TOUCH_CALIBRATION_Y
+      #define TOUCH_CALIBRATION_Y         -11388
+    #endif
+    #ifndef TOUCH_OFFSET_X
+      #define TOUCH_OFFSET_X                 -21
+    #endif
+    #ifndef TOUCH_OFFSET_Y
+      #define TOUCH_OFFSET_Y                 337
+    #endif
+    #ifndef TOUCH_ORIENTATION
+      #define TOUCH_ORIENTATION TOUCH_LANDSCAPE
+    #endif
 
   #elif ENABLED(MKS_TS35_V2_0)
 
@@ -544,8 +571,8 @@
      *                        EXP1                                     EXP2
      */
     #define TFT_CS_PIN               EXP1_07_PIN  // SPI1_CS
-    #define TFT_A0_PIN               EXP1_08_PIN  // SPI1_RS
-    #define TFT_DC_PIN                TFT_DC_PIN
+    #define TFT_DC_PIN               EXP1_08_PIN  // SPI1_RS
+    #define TFT_A0_PIN                TFT_DC_PIN
 
     #define TFT_RESET_PIN            EXP1_04_PIN
 
@@ -553,7 +580,7 @@
     #define TFT_BACKLIGHT_PIN  LCD_BACKLIGHT_PIN
 
     #define TOUCH_BUTTONS_HW_SPI
-    #define TOUCH_BUTTONS_HW_SPI_DEVICE 1
+    #define TOUCH_BUTTONS_HW_SPI_DEVICE        1
 
     #define TOUCH_CS_PIN             EXP1_05_PIN  // SPI1_NSS
     #define TOUCH_SCK_PIN            EXP2_02_PIN  // SPI1_SCK
@@ -563,7 +590,23 @@
     #define LCD_READ_ID                     0xD3
     #define LCD_USE_DMA_SPI
 
-    #define TFT_BUFFER_SIZE                14400
+    #define TFT_BUFFER_WORDS               14400
+
+    #ifndef TOUCH_CALIBRATION_X
+      #define TOUCH_CALIBRATION_X         -17253
+    #endif
+    #ifndef TOUCH_CALIBRATION_Y
+      #define TOUCH_CALIBRATION_Y          11579
+    #endif
+    #ifndef TOUCH_OFFSET_X
+      #define TOUCH_OFFSET_X                 514
+    #endif
+    #ifndef TOUCH_OFFSET_Y
+      #define TOUCH_OFFSET_Y                 -24
+    #endif
+    #ifndef TOUCH_ORIENTATION
+      #define TOUCH_ORIENTATION TOUCH_LANDSCAPE
+    #endif
 
   #endif
 
@@ -585,8 +628,8 @@
 //
 // NeoPixel LED
 //
-#ifndef NEOPIXEL_PIN
-  #define NEOPIXEL_PIN                      PE6
+#ifndef BOARD_NEOPIXEL_PIN
+  #define BOARD_NEOPIXEL_PIN                PE6
 #endif
 
 #if ENABLED(WIFISUPPORT)

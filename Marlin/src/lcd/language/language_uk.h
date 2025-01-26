@@ -59,7 +59,7 @@ namespace LanguageNarrow_uk {
   LSTR MSG_DEBUG_MENU                       = _UxGT("Меню Debug");
   LSTR MSG_PROGRESS_BAR_TEST                = _UxGT("Тест лінії прогр.");
   LSTR MSG_AUTO_HOME                        = _UxGT("Авто паркування");
-  LSTR MSG_AUTO_HOME_A                      = _UxGT("Паркування @");
+  LSTR MSG_AUTO_HOME_N                      = _UxGT("Паркування @");
   LSTR MSG_AUTO_HOME_X                      = _UxGT("Паркування X");
   LSTR MSG_AUTO_HOME_Y                      = _UxGT("Паркування Y");
   LSTR MSG_AUTO_HOME_Z                      = _UxGT("Паркування Z");
@@ -73,9 +73,6 @@ namespace LanguageNarrow_uk {
   LSTR MSG_LEVEL_BED_DONE                   = _UxGT("Завершено!");
   LSTR MSG_Z_FADE_HEIGHT                    = _UxGT("Висота спаду");
   LSTR MSG_SET_HOME_OFFSETS                 = _UxGT("Встан. зміщ. дому");
-  LSTR MSG_HOME_OFFSET_X                    = _UxGT("Зміщ. дому X");
-  LSTR MSG_HOME_OFFSET_Y                    = _UxGT("Зміщ. дому Y");
-  LSTR MSG_HOME_OFFSET_Z                    = _UxGT("Зміщ. дому Z");
   LSTR MSG_HOME_OFFSETS_APPLIED             = _UxGT("Зміщення прийняті");
   LSTR MSG_SELECT_ORIGIN                    = _UxGT("Оберіть нуль");
   LSTR MSG_LAST_VALUE_SP                    = _UxGT("Останнє знач. ");
@@ -120,6 +117,7 @@ namespace LanguageNarrow_uk {
   LSTR MSG_EXTRUDE                          = _UxGT("Екструзія");
   LSTR MSG_RETRACT                          = _UxGT("Втягування");
   LSTR MSG_MOVE_AXIS                        = _UxGT("Рух по осям");
+  LSTR MSG_PROBE_AND_LEVEL                  = _UxGT("Проба/вирівнювання");
   LSTR MSG_BED_LEVELING                     = _UxGT("Вирівнювання столу");
   LSTR MSG_LEVEL_BED                        = _UxGT("Вирівняти стіл");
   LSTR MSG_BED_TRAMMING                     = _UxGT("Вирівняти кути");
@@ -151,11 +149,10 @@ namespace LanguageNarrow_uk {
   LSTR MSG_IDEX_DUPE_GAP                    = _UxGT("Дублюв. X-проміжок");
 
   LSTR MSG_HOTEND_OFFSET_Z                  = _UxGT("Друге сопло Z");
-  LSTR MSG_HOTEND_OFFSET_A                  = _UxGT("Друге сопло @");
+  LSTR MSG_HOTEND_OFFSET_N                  = _UxGT("Друге сопло @");
 
   LSTR MSG_UBL_DOING_G29                    = _UxGT("Виконується G29");
   LSTR MSG_UBL_TOOLS                        = _UxGT("Інструменти UBL");
-  LSTR MSG_UBL_LEVEL_BED                    = _UxGT("Налаштування UBL");
   LSTR MSG_LCD_TILTING_MESH                 = _UxGT("Точка нахилу");
   LSTR MSG_UBL_MANUAL_MESH                  = _UxGT("Ручне введ. сітки");
   LSTR MSG_UBL_BC_INSERT                    = _UxGT("Розм. шайбу і вимір.");
@@ -163,8 +160,6 @@ namespace LanguageNarrow_uk {
   LSTR MSG_UBL_BC_INSERT2                   = _UxGT("Вимірювання");
   LSTR MSG_UBL_BC_REMOVE                    = _UxGT("Видали і вимір. стіл");
   LSTR MSG_UBL_MOVING_TO_NEXT               = _UxGT("Рух до наступної");
-  LSTR MSG_UBL_ACTIVATE_MESH                = _UxGT("Активувати UBL");
-  LSTR MSG_UBL_DEACTIVATE_MESH              = _UxGT("Деактивувати UBL");
   LSTR MSG_UBL_SET_TEMP_BED                 = LCD_STR_THERMOMETER _UxGT(" столу, ") LCD_STR_DEGREE _UxGT("C");
   LSTR MSG_UBL_BED_TEMP_CUSTOM              = _UxGT("Своя ") LCD_STR_THERMOMETER _UxGT(" столу,") LCD_STR_DEGREE _UxGT("C");
   LSTR MSG_UBL_SET_TEMP_HOTEND              = LCD_STR_THERMOMETER _UxGT(" сопла, ") LCD_STR_DEGREE _UxGT("C");
@@ -172,7 +167,6 @@ namespace LanguageNarrow_uk {
   LSTR MSG_UBL_EDIT_CUSTOM_MESH             = _UxGT("Редагувати свою");
   LSTR MSG_UBL_FINE_TUNE_MESH               = _UxGT("Точне редаг. сітки");
   LSTR MSG_UBL_BUILD_CUSTOM_MESH            = _UxGT("Будувати свою");
-  LSTR MSG_UBL_MESH_EDIT                    = _UxGT("Редагування сітки");
   LSTR MSG_UBL_DONE_EDITING_MESH            = _UxGT("Сітка побудована");
   LSTR MSG_UBL_BUILD_MESH_MENU              = _UxGT("Будувати сітку");
   LSTR MSG_UBL_BUILD_MESH_M                 = _UxGT("Будувати сітку ($)");
@@ -231,7 +225,8 @@ namespace LanguageNarrow_uk {
   LSTR MSG_UBL_7_SAVE_MESH                  = _UxGT("7.Зберегти сітку");
 
   LSTR MSG_LED_CONTROL                      = _UxGT("Керування світлом");
-  LSTR MSG_LEDS                             = _UxGT("Підсвітка");
+  LSTR MSG_LIGHTS                           = _UxGT("Підсвітка");
+  LSTR MSG_LIGHT_N                          = _UxGT("Світло #{");
   LSTR MSG_LED_PRESETS                      = _UxGT("Передустан. світла");
   LSTR MSG_SET_LEDS_RED                     = _UxGT("Червоний");
   LSTR MSG_SET_LEDS_ORANGE                  = _UxGT("Помаранчевий");
@@ -243,7 +238,6 @@ namespace LanguageNarrow_uk {
   LSTR MSG_SET_LEDS_WHITE                   = _UxGT("Білий");
   LSTR MSG_SET_LEDS_DEFAULT                 = _UxGT("За умовчанням");
   LSTR MSG_LED_CHANNEL_N                    = _UxGT("Канал {");
-  LSTR MSG_LEDS2                            = _UxGT("Світло #2");
   LSTR MSG_NEO2_PRESETS                     = _UxGT("Передуст. світла #2");
   LSTR MSG_NEO2_BRIGHTNESS                  = _UxGT("Яскравість");
   LSTR MSG_CUSTOM_LEDS                      = _UxGT("Своє світло");
@@ -263,10 +257,8 @@ namespace LanguageNarrow_uk {
   LSTR MSG_MOVE_EN                          = _UxGT("Екструдер *");
   LSTR MSG_HOTEND_TOO_COLD                  = _UxGT("Сопло дуже холодне");
   LSTR MSG_MOVE_N_MM                        = _UxGT("Рух $мм");
-  LSTR MSG_MOVE_01MM                        = _UxGT("Рух 0.1мм");
-  LSTR MSG_MOVE_1MM                         = _UxGT("Рух 1мм");
-  LSTR MSG_MOVE_10MM                        = _UxGT("Рух 10мм");
-  LSTR MSG_MOVE_100MM                       = _UxGT("Рух 100mm");
+  LSTR MSG_MOVE_N_IN                        = _UxGT("Рух $in");
+  LSTR MSG_MOVE_N_DEG                       = _UxGT("Рух $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                            = _UxGT("Швидкість");
   LSTR MSG_MESH_Z_OFFSET                    = _UxGT("Z Столу");
   LSTR MSG_NOZZLE                           = _UxGT("Сопло, ") LCD_STR_DEGREE _UxGT("C");
@@ -453,7 +445,12 @@ namespace LanguageNarrow_uk {
   LSTR MSG_FILAMENTUNLOAD                   = _UxGT("Видалити пруток");
   LSTR MSG_FILAMENTUNLOAD_E                 = _UxGT("Видалити пруток *");
   LSTR MSG_FILAMENTUNLOAD_ALL               = _UxGT("Видалити все");
-  LSTR MSG_ATTACH_MEDIA                     = _UxGT("Вставити SD-картку");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA                = _UxGT("Вставити SD-картку");
+    LSTR MSG_ATTACH_USB_MEDIA               = _UxGT("Вставити USB флешка");
+  #else
+    LSTR MSG_ATTACH_MEDIA                   = _UxGT("Вставити SD-картку");
+  #endif
   LSTR MSG_CHANGE_MEDIA                     = _UxGT("Заміна SD-картки");
   LSTR MSG_RELEASE_MEDIA                    = _UxGT("Видаліть SD-картку");
   LSTR MSG_ZPROBE_OUT                       = _UxGT("Z-Зонд поза столом");
@@ -483,6 +480,8 @@ namespace LanguageNarrow_uk {
   LSTR MSG_ZPROBE_XOFFSET                   = _UxGT("Зміщення по X");
   LSTR MSG_ZPROBE_YOFFSET                   = _UxGT("Зміщення по Y");
   LSTR MSG_ZPROBE_ZOFFSET                   = _UxGT("Зміщення по Z");
+  LSTR MSG_ZPROBE_OFFSET_N                  = _UxGT("Зміщення по @");
+  LSTR MSG_BABYSTEP_PROBE_Z                 = _UxGT("Крок Z зміщення");
   LSTR MSG_MOVE_NOZZLE_TO_BED               = _UxGT("Рухати сопло до столу");
   LSTR MSG_BABYSTEP_X                       = _UxGT("Мікрокрок X");
   LSTR MSG_BABYSTEP_Y                       = _UxGT("Мікрокрок Y");
@@ -490,13 +489,10 @@ namespace LanguageNarrow_uk {
   LSTR MSG_BABYSTEP_N                       = _UxGT("Мікрокрок @");
   LSTR MSG_BABYSTEP_TOTAL                   = _UxGT("Сумарно");
   LSTR MSG_ENDSTOP_ABORT                    = _UxGT("Кінцевик спрацював");
-  LSTR MSG_HEATING_FAILED_LCD               = _UxGT("Збій нагріву");
+  LSTR MSG_ERR_HEATING_FAILED               = _UxGT("Збій нагріву");
   LSTR MSG_ERR_REDUNDANT_TEMP               = _UxGT("ЗАВИЩЕНА Т") LCD_STR_DEGREE;
-  LSTR MSG_THERMAL_RUNAWAY                  = _UxGT("ВИТІК ТЕПЛА");
-  LSTR MSG_THERMAL_RUNAWAY_BED              = _UxGT("ВИТІК ТЕПЛА СТОЛУ");
-  LSTR MSG_THERMAL_RUNAWAY_CHAMBER          = _UxGT("ВИТІК ТЕПЛА КАМЕРИ");
-  LSTR MSG_THERMAL_RUNAWAY_COOLER           = _UxGT("ВИТІК ОХОЛОДЖЕННЯ");
-  LSTR MSG_COOLING_FAILED                   = _UxGT("ОХОЛОДЖ. НЕ ВДАЛОСЬ");
+  LSTR MSG_ERR_THERMAL_RUNAWAY              = _UxGT("ВИТІК ТЕПЛА");
+  LSTR MSG_ERR_COOLING_FAILED               = _UxGT("ОХОЛОДЖ. НЕ ВДАЛОСЬ");
   LSTR MSG_ERR_MAXTEMP                      = _UxGT("МАКСИМАЛЬНА Т") LCD_STR_DEGREE;
   LSTR MSG_ERR_MINTEMP                      = _UxGT("МІНІМАЛЬНА Т") LCD_STR_DEGREE;
   LSTR MSG_HALTED                           = _UxGT("ПРИНТЕР ЗУПИНЕНО");
@@ -545,28 +541,31 @@ namespace LanguageNarrow_uk {
   LSTR MSG_CASE_LIGHT_BRIGHTNESS            = _UxGT("Яскравість світла");
   LSTR MSG_KILL_EXPECTED_PRINTER            = _UxGT("НЕ ТОЙ ПРИНТЕР");
 
-  LSTR MSG_INFO_COMPLETED_PRINTS            = _UxGT("Завершено");
-  LSTR MSG_INFO_PRINT_FILAMENT              = _UxGT("Екструдовано");
-  LSTR MSG_PLEASE_PREHEAT                   = _UxGT("Нагрійте хотенд");
-  LSTR MSG_COLORS_GET                       = _UxGT("Отримати колір");
-  LSTR MSG_MEDIA_NOT_INSERTED               = _UxGT("Немає носія");
-  LSTR MSG_PLEASE_WAIT_REBOOT               = _UxGT("Перезавантаж...");
+  LSTR MSG_COLORS_GET                       = _UxGT("Отримати колір");  // ProUI
+  LSTR MSG_COLORS_SELECT                    = _UxGT("Кольори");         // ProUI
+  LSTR MSG_COLORS_APPLIED                   = _UxGT("Кольори застос."); // ProUI
+  LSTR MSG_COLORS_RED                       = _UxGT("Червоний");        // ProUI / JyersUI
+  LSTR MSG_COLORS_GREEN                     = _UxGT("Зелений");         // ProUI / JyersUI
+  LSTR MSG_COLORS_BLUE                      = _UxGT("Синій");           // ProUI / JyersUI
+  LSTR MSG_COLORS_WHITE                     = _UxGT("Білий");           // ProUI
+  LSTR MSG_UI_LANGUAGE                      = _UxGT("Мова");            // ProUI
+  LSTR MSG_SOUND_ENABLE                     = _UxGT("Дозволити звук");  // ProUI
+  LSTR MSG_LOCKSCREEN                       = _UxGT("Блокувати екран"); // ProUI
+  //MSG_LOCKSCREEN_LOCKED
+  //MSG_LOCKSCREEN_UNLOCK
+  LSTR MSG_PLEASE_WAIT_REBOOT               = _UxGT("Перезавантаж..."); // ProUI
+  LSTR MSG_MEDIA_NOT_INSERTED               = _UxGT("Немає носія");     // ProUI
+  LSTR MSG_PLEASE_PREHEAT                   = _UxGT("Нагрійте хотенд"); // ProUI
+
   LSTR MSG_INFO_PRINT_COUNT                 = _UxGT("Друків");
   LSTR MSG_INFO_PRINT_TIME                  = _UxGT("Загалом");
   LSTR MSG_INFO_PRINT_LONGEST               = _UxGT("Найдовше");
-  LSTR MSG_COLORS_SELECT                    = _UxGT("Кольори");
-  LSTR MSG_COLORS_APPLIED                   = _UxGT("Кольори застос.");
-  LSTR MSG_COLORS_RED                       = _UxGT("Червоний");
-  LSTR MSG_COLORS_GREEN                     = _UxGT("Зелений");
-  LSTR MSG_COLORS_BLUE                      = _UxGT("Синій");
-  LSTR MSG_COLORS_WHITE                     = _UxGT("Білий");
-  LSTR MSG_UI_LANGUAGE                      = _UxGT("Мова");
-  LSTR MSG_SOUND_ENABLE                     = _UxGT("Дозволити звук");
-  LSTR MSG_LOCKSCREEN                       = _UxGT("Блокувати екран");
-
+  LSTR MSG_INFO_PRINT_FILAMENT              = _UxGT("Екструдовано");
+  LSTR MSG_INFO_COMPLETED_PRINTS            = _UxGT("Завершено");
   LSTR MSG_INFO_MIN_TEMP                    = _UxGT("Мін.  ") LCD_STR_THERMOMETER;
   LSTR MSG_INFO_MAX_TEMP                    = _UxGT("Макс. ") LCD_STR_THERMOMETER;
   LSTR MSG_INFO_PSU                         = _UxGT("Блок жив-ня");
+
   LSTR MSG_DRIVE_STRENGTH                   = _UxGT("Сила мотору");
   LSTR MSG_DAC_PERCENT_N                    = _UxGT("Драйвер @, %");
   LSTR MSG_ERROR_TMC                        = _UxGT("ЗБІЙ ЗВ'ЯЗКУ З TMC");
@@ -644,7 +643,6 @@ namespace LanguageNarrow_uk {
   LSTR MSG_REMINDER_SAVE_SETTINGS           = _UxGT("Не забудь зберегти!");
   LSTR MSG_PASSWORD_REMOVED                 = _UxGT("Пароль видалений");
 
-
   //
   // Filament Change screens show up to 2 lines on a 3-line display
   //
@@ -710,9 +708,9 @@ namespace LanguageWide_uk {
     LSTR MSG_KILL_SUBCALL_OVERFLOW          = _UxGT("Переповнення виклику");
     LSTR MSG_LCD_SOFT_ENDSTOPS              = _UxGT("Програмні кінцевики");
     LSTR MSG_SET_HOME_OFFSETS               = _UxGT("Встанов. зміщення дому");
-    LSTR MSG_HOME_OFFSET_X                  = _UxGT("Зміщення дому X");
-    LSTR MSG_HOME_OFFSET_Y                  = _UxGT("Зміщення дому Y");
-    LSTR MSG_HOME_OFFSET_Z                  = _UxGT("Зміщення дому Z");
+    LSTR MSG_HOME_OFFSET_X                  = _UxGT("Зміщення дому X"); // DWIN
+    LSTR MSG_HOME_OFFSET_Y                  = _UxGT("Зміщення дому Y"); // DWIN
+    LSTR MSG_HOME_OFFSET_Z                  = _UxGT("Зміщення дому Z"); // DWIN
     LSTR MSG_LAST_VALUE_SP                  = _UxGT("Останнє значення ");
     LSTR MSG_LASER_POWER                    = _UxGT("Потужність лазера");
     LSTR MSG_SPINDLE_TOGGLE                 = _UxGT("Перемкн. шпіндель");
@@ -754,7 +752,7 @@ namespace LanguageWide_uk {
     LSTR MSG_SINGLENOZZLE_RETRACT_SPEED     = _UxGT("Швидкість втягув.");
     LSTR MSG_SINGLENOZZLE_FAN_SPEED         = _UxGT("Оберти вентилятора");
     LSTR MSG_SINGLENOZZLE_FAN_TIME          = _UxGT("Час вентилятора");
-    LSTR MSG_COOLING_FAILED                 = _UxGT("ОХОЛОДЖЕННЯ НЕ ВДАЛОСЬ");
+    LSTR MSG_ERR_COOLING_FAILED             = _UxGT("ОХОЛОДЖЕННЯ НЕ ВДАЛОСЬ");
     LSTR MSG_BED_COOLING                    = _UxGT("Охолодження столу...");
     LSTR MSG_PROBE_COOLING                  = _UxGT("Охолодження зонду...");
     LSTR MSG_CHAMBER_COOLING                = _UxGT("Охолодження камери...");

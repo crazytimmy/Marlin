@@ -74,8 +74,10 @@ namespace LanguageNarrow_hr {
   LSTR MSG_SWITCH_PS_ON                   = _UxGT("Uključi napajanje");
   LSTR MSG_SWITCH_PS_OFF                  = _UxGT("Isključi napajanje");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Miči os");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Probe i Nivelacija");
   LSTR MSG_BED_LEVELING                   = _UxGT("Niveliraj bed");
   LSTR MSG_LEVEL_BED                      = _UxGT("Niveliraj bed");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Korak Z offset");
   LSTR MSG_MOVE_X                         = _UxGT("Miči X");
   LSTR MSG_MOVE_Y                         = _UxGT("Miči Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Miči Z");
@@ -83,11 +85,8 @@ namespace LanguageNarrow_hr {
   LSTR MSG_MOVE_E                         = _UxGT("Miči E");
   LSTR MSG_MOVE_EN                        = _UxGT("Miči *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Miči $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Miči 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Miči 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Miči 10mm");
-  LSTR MSG_MOVE_50MM                      = _UxGT("Miči 50mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Miči 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Miči $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Miči $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Brzina");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Bed Z");
   LSTR MSG_NOZZLE                         = _UxGT("Dizna");
@@ -118,9 +117,14 @@ namespace LanguageNarrow_hr {
   LSTR MSG_STOPPED                        = _UxGT("ZAUSTAVLJEN. ");
   LSTR MSG_FILAMENTCHANGE                 = _UxGT("Promijeni filament");
   LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Promijeni filament *");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Init. SD karticu");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Init. SD karticu");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Init. USB pogon");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Init. SD karticu");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Promijeni SD karticu");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Grijanje neuspješno");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Grijanje neuspješno");
   LSTR MSG_HEATING                        = _UxGT("Grijanje...");
   LSTR MSG_BED_HEATING                    = _UxGT("Grijanje Bed-a...");
   LSTR MSG_DELTA_CALIBRATE                = _UxGT("Delta Kalibracija");

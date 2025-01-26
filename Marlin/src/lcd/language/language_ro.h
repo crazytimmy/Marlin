@@ -98,6 +98,7 @@ namespace LanguageNarrow_ro {
   LSTR MSG_EXTRUDE                        = _UxGT("Extrudeaza");
   LSTR MSG_RETRACT                        = _UxGT("Retracteaza");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Muta Axa");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Probare si Nivelare");
   LSTR MSG_BED_LEVELING                   = _UxGT("Nivelarea Patului");
   LSTR MSG_LEVEL_BED                      = _UxGT("Niveleaza Patul");
   LSTR MSG_BED_TRAMMING                   = _UxGT("Niveleaza Colturile");
@@ -120,23 +121,19 @@ namespace LanguageNarrow_ro {
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Mirrored Copy");
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Full Control");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2nd Nozzle Z");
-  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2nd Nozzle @");
+  LSTR MSG_HOTEND_OFFSET_N                = _UxGT("2nd Nozzle @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("Doing G29");
   LSTR MSG_UBL_TOOLS                      = _UxGT("UBL Tools");
-  LSTR MSG_UBL_LEVEL_BED                  = _UxGT("Unified Bed Leveling");
   LSTR MSG_LCD_TILTING_MESH               = _UxGT("Tilting Point");
   LSTR MSG_UBL_MANUAL_MESH                = _UxGT("Manually Build Mesh");
   LSTR MSG_UBL_BC_INSERT                  = _UxGT("Place Shim & Measure");
   LSTR MSG_UBL_BC_INSERT2                 = _UxGT("Measure");
   LSTR MSG_UBL_BC_REMOVE                  = _UxGT("Remove & Measure Bed");
   LSTR MSG_UBL_MOVING_TO_NEXT             = _UxGT("Moving to next");
-  LSTR MSG_UBL_ACTIVATE_MESH              = _UxGT("Activate UBL");
-  LSTR MSG_UBL_DEACTIVATE_MESH            = _UxGT("Deactivate UBL");
   LSTR MSG_UBL_SET_TEMP_BED               = _UxGT("Bed Temp");
   LSTR MSG_UBL_BED_TEMP_CUSTOM            = _UxGT("Bed Temp");
   LSTR MSG_UBL_SET_TEMP_HOTEND            = _UxGT("Hotend Temp");
   LSTR MSG_UBL_HOTEND_TEMP_CUSTOM         = _UxGT("Hotend Temp");
-  LSTR MSG_UBL_MESH_EDIT                  = _UxGT("Mesh Edit");
   LSTR MSG_UBL_EDIT_CUSTOM_MESH           = _UxGT("Edit Custom Mesh");
   LSTR MSG_UBL_FINE_TUNE_MESH             = _UxGT("Fine Tuning Mesh");
   LSTR MSG_UBL_DONE_EDITING_MESH          = _UxGT("Done Editing Mesh");
@@ -197,7 +194,8 @@ namespace LanguageNarrow_ro {
   LSTR MSG_UBL_7_SAVE_MESH                = _UxGT("7. Save Bed Mesh");
 
   LSTR MSG_LED_CONTROL                    = _UxGT("LED Control");
-  LSTR MSG_LEDS                           = _UxGT("Lights");
+  LSTR MSG_LIGHTS                         = _UxGT("Lights");
+  LSTR MSG_LIGHT_N                        = _UxGT("Light #{");
   LSTR MSG_LED_PRESETS                    = _UxGT("Light Presets");
   LSTR MSG_SET_LEDS_RED                   = _UxGT("Red");
   LSTR MSG_SET_LEDS_ORANGE                = _UxGT("Orange");
@@ -225,10 +223,8 @@ namespace LanguageNarrow_ro {
   LSTR MSG_MOVE_EN                        = _UxGT("Extruder *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Capat Prea Rece");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Move $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Move 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Move 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Move 10mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Move 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Move $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Move $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Speed");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Bed Z");
   LSTR MSG_NOZZLE                         = _UxGT("Nozzle");
@@ -392,7 +388,12 @@ namespace LanguageNarrow_ro {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Scoatere Filament");
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Scoatere Filament *");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Scoate Tot");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Atasare Media");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Atasare card SD");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Atasare FD USB");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Atasare card SD");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Inlocuire Media");
   LSTR MSG_RELEASE_MEDIA                  = _UxGT("Eliberare Media");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Z Probe Past Bed");
@@ -422,17 +423,17 @@ namespace LanguageNarrow_ro {
   LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Probe X Offset");
   LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Probe Y Offset");
   LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Probe Z Offset");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Probe @ Offset");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Pas Z ajustare");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Babystep X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Babystep Y");
   LSTR MSG_BABYSTEP_Z                     = _UxGT("Babystep Z");
   LSTR MSG_BABYSTEP_N                     = _UxGT("Babystep @");
   LSTR MSG_BABYSTEP_TOTAL                 = _UxGT("Total");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Endstop Abort");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Heating Failed");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Heating Failed");
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Err: REDUNDANT TEMP");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("THERMAL RUNAWAY");
-  LSTR MSG_THERMAL_RUNAWAY_BED            = _UxGT("BED THERMAL RUNAWAY");
-  LSTR MSG_THERMAL_RUNAWAY_CHAMBER        = _UxGT("CHAMBER T. RUNAWAY");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("THERMAL RUNAWAY");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Err: MAXTEMP");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Err: MINTEMP");
   LSTR MSG_HALTED                         = _UxGT("PRINTER HALTED");

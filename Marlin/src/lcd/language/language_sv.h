@@ -115,6 +115,7 @@ namespace LanguageNarrow_sv {
   LSTR MSG_EXTRUDE                        = _UxGT("Extrudera");
   LSTR MSG_RETRACT                        = _UxGT("Dra tillbaka");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Flytta Axel");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Sond och Nivellera");
   LSTR MSG_BED_LEVELING                   = _UxGT("Bädd Nivellering");
   LSTR MSG_LEVEL_BED                      = _UxGT("Nivellera Bädd");
   LSTR MSG_BED_TRAMMING                   = _UxGT("Bädd Justering");
@@ -143,23 +144,19 @@ namespace LanguageNarrow_sv {
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Full Kontroll");
   LSTR MSG_IDEX_DUPE_GAP                  = _UxGT("Duplicera X-Avstånd");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2:a Munstycke Z");
-  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2:a Munstycke @");
+  LSTR MSG_HOTEND_OFFSET_N                = _UxGT("2:a Munstycke @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("Utför G29");
   LSTR MSG_UBL_TOOLS                      = _UxGT("UBL Verktyg");
-  LSTR MSG_UBL_LEVEL_BED                  = _UxGT("Enad Bädd Nivellering (UBL)");
   LSTR MSG_LCD_TILTING_MESH               = _UxGT("Lutningspunkt");
   LSTR MSG_UBL_MANUAL_MESH                = _UxGT("Manuellt skapa nät");
   LSTR MSG_UBL_BC_INSERT                  = _UxGT("Placera Shim & Mät");
   LSTR MSG_UBL_BC_INSERT2                 = _UxGT("Mät");
   LSTR MSG_UBL_BC_REMOVE                  = _UxGT("Ta bort & Mät bädd");
   LSTR MSG_UBL_MOVING_TO_NEXT             = _UxGT("Flyttar till nästa");
-  LSTR MSG_UBL_ACTIVATE_MESH              = _UxGT("Aktivera UBL");
-  LSTR MSG_UBL_DEACTIVATE_MESH            = _UxGT("Avaktivera UBL");
   LSTR MSG_UBL_SET_TEMP_BED               = _UxGT("Bädd Temp");
   LSTR MSG_UBL_BED_TEMP_CUSTOM            = _UxGT("Bädd Temp");
   LSTR MSG_UBL_SET_TEMP_HOTEND            = _UxGT("Hetände Temp");
   LSTR MSG_UBL_HOTEND_TEMP_CUSTOM         = _UxGT("Hetände Temp");
-  LSTR MSG_UBL_MESH_EDIT                  = _UxGT("Nät Redigera");
   LSTR MSG_UBL_EDIT_CUSTOM_MESH           = _UxGT("Redigera Anpassat Nät");
   LSTR MSG_UBL_FINE_TUNE_MESH             = _UxGT("Finjustera Nät");
   LSTR MSG_UBL_DONE_EDITING_MESH          = _UxGT("Färdig Redigera Nät");
@@ -220,7 +217,8 @@ namespace LanguageNarrow_sv {
   LSTR MSG_UBL_7_SAVE_MESH                = _UxGT("7. Spara Bädd Nät");
 
   LSTR MSG_LED_CONTROL                    = _UxGT("LED Kontroll");
-  LSTR MSG_LEDS                           = _UxGT("Ljus");
+  LSTR MSG_LIGHTS                         = _UxGT("Ljus");
+  LSTR MSG_LIGHT_N                        = _UxGT("Ljus #{");
   LSTR MSG_LED_PRESETS                    = _UxGT("Ljus Förinställd");
   LSTR MSG_SET_LEDS_RED                   = _UxGT("Röd");
   LSTR MSG_SET_LEDS_ORANGE                = _UxGT("Orange");
@@ -232,7 +230,6 @@ namespace LanguageNarrow_sv {
   LSTR MSG_SET_LEDS_WHITE                 = _UxGT("Vitt");
   LSTR MSG_SET_LEDS_DEFAULT               = _UxGT("Standard");
   LSTR MSG_LED_CHANNEL_N                  = _UxGT("Kanal {");
-  LSTR MSG_LEDS2                          = _UxGT("Ljus #2");
   LSTR MSG_NEO2_PRESETS                   = _UxGT("Ljus #2 Förinställd");
   LSTR MSG_NEO2_BRIGHTNESS                = _UxGT("Ljusstyrka");
   LSTR MSG_CUSTOM_LEDS                    = _UxGT("Anpassat Ljus");
@@ -252,13 +249,8 @@ namespace LanguageNarrow_sv {
   LSTR MSG_MOVE_EN                        = _UxGT("Extruder *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Hetände för kall");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Flytta $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Flytta 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Flytta 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Flytta 10mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Flytta 100mm");
-  LSTR MSG_MOVE_0001IN                    = _UxGT("Flytta 0.001tum");
-  LSTR MSG_MOVE_001IN                     = _UxGT("Flytta 0.01tum");
-  LSTR MSG_MOVE_01IN                      = _UxGT("Flytta 0.1tum");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Flytta $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Flytta $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Hastighet");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Bädd Z");
   LSTR MSG_NOZZLE                         = _UxGT("Munstycke");
@@ -425,7 +417,12 @@ namespace LanguageNarrow_sv {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Lossa Tråd");
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Lossa *");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Lossa All");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Bifoga Media");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Bifoga SD-kort");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Bifoga USB-minne");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Bifoga SD-kort");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Byt Media");
   LSTR MSG_RELEASE_MEDIA                  = _UxGT("Släpp Media");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Z Sond Utanför Bädd");
@@ -455,6 +452,8 @@ namespace LanguageNarrow_sv {
   LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Sond X Offset");
   LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Sond Y Offset");
   LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Sond Z Offset");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Sond @ Offset");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Steg Z justering");
   LSTR MSG_MOVE_NOZZLE_TO_BED             = _UxGT("Flytta Munstycke till Bädd");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Småsteg X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Småsteg Y");
@@ -462,11 +461,9 @@ namespace LanguageNarrow_sv {
   LSTR MSG_BABYSTEP_N                     = _UxGT("Småsteg @");
   LSTR MSG_BABYSTEP_TOTAL                 = _UxGT("Total");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Slutstopp Avbrott");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Värma Misslyckad");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Värma Misslyckad");
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Fel: REDUNDANT TEMP");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("TERMISK ÖVERDRIFT");
-  LSTR MSG_THERMAL_RUNAWAY_BED            = _UxGT("BÄDD TERMISK ÖVERDRIFT");
-  LSTR MSG_THERMAL_RUNAWAY_CHAMBER        = _UxGT("KAMMARE T. ÖVERDRIFT");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("TERMISK ÖVERDRIFT");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Fel: MAXTEMP");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Fel: MINTEMP");
   LSTR MSG_HALTED                         = _UxGT("Utskrift stoppad");

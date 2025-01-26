@@ -41,7 +41,6 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_MEDIA_ABORTING                 = _UxGT("Abortando...");
   LSTR MSG_MEDIA_INSERTED                 = _UxGT("Cartão inserido");
   LSTR MSG_MEDIA_REMOVED                  = _UxGT("Cartão removido");
-  LSTR MSG_MEDIA_RELEASED                 = _UxGT("Cartão liberado");
   LSTR MSG_MEDIA_WAITING                  = _UxGT("Aguardando cartão");
   LSTR MSG_MEDIA_READ_ERROR               = _UxGT("Erro de leitura");
   LSTR MSG_MEDIA_USB_REMOVED              = _UxGT("USB removido");
@@ -91,6 +90,7 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_EXTRUDE                        = _UxGT("Extrusar");
   LSTR MSG_RETRACT                        = _UxGT("Retrair");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Mover eixo");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Sondar e Nivelar");
   LSTR MSG_BED_LEVELING                   = _UxGT("Nivelação Mesa");
   LSTR MSG_LEVEL_BED                      = _UxGT("Nivelar Mesa");
   LSTR MSG_BED_TRAMMING                   = _UxGT("Nivelar Cantos");
@@ -111,22 +111,18 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Cópia espelhada");
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Controle Total");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2o bico Z");
-  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2o bico @");
+  LSTR MSG_HOTEND_OFFSET_N                = _UxGT("2o bico @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("Executando G29");
   LSTR MSG_UBL_TOOLS                      = _UxGT("Ferramentas UBL");
-  LSTR MSG_UBL_LEVEL_BED                  = _UxGT("Nivel. Mesa Unif.");
   LSTR MSG_UBL_MANUAL_MESH                = _UxGT("Fazer malha manual");
   LSTR MSG_UBL_BC_INSERT                  = _UxGT("Calçar e calibrar");
   LSTR MSG_UBL_BC_INSERT2                 = _UxGT("Medir");
   LSTR MSG_UBL_BC_REMOVE                  = _UxGT("Remover e calibrar");
   LSTR MSG_UBL_MOVING_TO_NEXT             = _UxGT("Movendo para Próximo");
-  LSTR MSG_UBL_ACTIVATE_MESH              = _UxGT("Ativar UBL");
-  LSTR MSG_UBL_DEACTIVATE_MESH            = _UxGT("Desativar UBL");
   LSTR MSG_UBL_SET_TEMP_BED               = _UxGT("Temp. Mesa");
   LSTR MSG_UBL_BED_TEMP_CUSTOM            = _UxGT("Temp. Mesa");
   LSTR MSG_UBL_SET_TEMP_HOTEND            = _UxGT("Temp. Extrusora");
   LSTR MSG_UBL_HOTEND_TEMP_CUSTOM         = _UxGT("Temp. Extrusora");
-  LSTR MSG_UBL_MESH_EDIT                  = _UxGT("Editar Malha");
   LSTR MSG_UBL_EDIT_CUSTOM_MESH           = _UxGT("Editar Malha Custom");
   LSTR MSG_UBL_FINE_TUNE_MESH             = _UxGT("Ajuste Fino da Malha");
   LSTR MSG_UBL_DONE_EDITING_MESH          = _UxGT("Fim da Edição");
@@ -184,7 +180,8 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_UBL_7_SAVE_MESH                = _UxGT("7.Salvar Malha");
 
   LSTR MSG_LED_CONTROL                    = _UxGT("Controle do LED");
-  LSTR MSG_LEDS                           = _UxGT("Luz");
+  LSTR MSG_LIGHTS                         = _UxGT("Luz");
+  LSTR MSG_LIGHT_N                        = _UxGT("Luz #{");
   LSTR MSG_LED_PRESETS                    = _UxGT("Configuração da Luz");
   LSTR MSG_SET_LEDS_RED                   = _UxGT("Luz Vermelha");
   LSTR MSG_SET_LEDS_ORANGE                = _UxGT("Luz Laranja");
@@ -212,10 +209,8 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_MOVE_EN                        = _UxGT("Mover Extrusor *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Extrus. mto fria");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Mover $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Mover 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Mover 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Mover 10mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Mover 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Mover $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Mover $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Velocidade");
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("Base Z");
   LSTR MSG_NOZZLE                         = _UxGT("Bocal");
@@ -326,7 +321,12 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Descarreg. Filamento");
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Descarreg. Filamento *");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Descarregar Todos");
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("Iniciar SD");
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("Iniciar cartão SD");
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("Iniciar flash USB");
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("Iniciar cartão SD");
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("Trocar SD");
   LSTR MSG_RELEASE_MEDIA                  = _UxGT("Liberar SD");
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Sonda fora da mesa");
@@ -343,17 +343,17 @@ namespace LanguageNarrow_pt_br {
   LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Compensar Sonda em X");
   LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Compensar Sonda em Y");
   LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Compensar Sonda em Z");
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("Compensar Sonda em @");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Passo Z ajuste");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Passinho X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Passinho Y");
   LSTR MSG_BABYSTEP_Z                     = _UxGT("Passinho Z");
   LSTR MSG_BABYSTEP_N                     = _UxGT("Passinho @");
   LSTR MSG_BABYSTEP_TOTAL                 = _UxGT("Total");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Abortar Fim de Curso");
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Aquecimento falhou");
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("Aquecimento falhou");
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("Erro:Temp Redundante");
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("ESCAPE TÉRMICO");
-  LSTR MSG_THERMAL_RUNAWAY_BED            = _UxGT("ESCAPE TÉRMICO MESA");
-  LSTR MSG_THERMAL_RUNAWAY_CHAMBER        = _UxGT("ESCAPE TÉRMICO CAMARA");
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("ESCAPE TÉRMICO");
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("Erro:Temp Máxima");
   LSTR MSG_ERR_MINTEMP                    = _UxGT("Erro:Temp Mínima");
   LSTR MSG_HALTED                         = _UxGT("IMPRESSORA PAROU");

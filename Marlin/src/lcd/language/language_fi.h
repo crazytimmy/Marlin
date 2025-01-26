@@ -66,6 +66,8 @@ namespace LanguageNarrow_fi {
   LSTR MSG_EXTRUDE                        = _UxGT("Pursota");
   LSTR MSG_RETRACT                        = _UxGT("Vedä takaisin");
   LSTR MSG_MOVE_AXIS                      = _UxGT("Liikuta akseleita");
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("Tutki ja tasoita");
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("Säädä Z askeltamalla");
   LSTR MSG_MOVE_X                         = _UxGT("Liikuta X");
   LSTR MSG_MOVE_Y                         = _UxGT("Liikuta Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Liikuta Z");
@@ -73,11 +75,8 @@ namespace LanguageNarrow_fi {
   LSTR MSG_MOVE_E                         = _UxGT("Extruder");
   LSTR MSG_MOVE_EN                        = _UxGT("Extruder *");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Liikuta $mm");
-  LSTR MSG_MOVE_01MM                      = _UxGT("Liikuta 0.1mm");
-  LSTR MSG_MOVE_1MM                       = _UxGT("Liikuta 1mm");
-  LSTR MSG_MOVE_10MM                      = _UxGT("Liikuta 10mm");
-  LSTR MSG_MOVE_50MM                      = _UxGT("Liikuta 50mm");
-  LSTR MSG_MOVE_100MM                     = _UxGT("Liikuta 100mm");
+  LSTR MSG_MOVE_N_IN                      = _UxGT("Liikuta $in");
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("Liikuta $") LCD_STR_DEGREE;
   LSTR MSG_SPEED                          = _UxGT("Nopeus");
   LSTR MSG_NOZZLE                         = _UxGT("Suutin");
   LSTR MSG_NOZZLE_N                       = _UxGT("Suutin ~");

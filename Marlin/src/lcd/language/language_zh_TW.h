@@ -94,6 +94,7 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_EXTRUDE                        = _UxGT("擠出"); // "Extrude"
   LSTR MSG_RETRACT                        = _UxGT("回縮"); // "Retract"
   LSTR MSG_MOVE_AXIS                      = _UxGT("移動軸"); // "Move axis"
+  LSTR MSG_PROBE_AND_LEVEL                = _UxGT("探測和調平"); // "Probe and Level"
   LSTR MSG_BED_LEVELING                   = _UxGT("調平熱床"); // "Bed leveling"
   LSTR MSG_LEVEL_BED                      = _UxGT("調平熱床"); // "Level bed"
   LSTR MSG_BED_TRAMMING                   = _UxGT("調平邊角"); // "Bed Tramming"
@@ -116,23 +117,19 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Mirrored Copy");
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Full Control");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2nd Nozzle Z");
-  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2nd Nozzle @");
+  LSTR MSG_HOTEND_OFFSET_N                = _UxGT("2nd Nozzle @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("執行G29"); // "Doing G29"
   LSTR MSG_UBL_TOOLS                      = _UxGT("UBL工具"); // "UBL Tools"
-  LSTR MSG_UBL_LEVEL_BED                  = _UxGT("統一熱床調平(UBL)"); // "Unified Bed Leveling"
   LSTR MSG_LCD_TILTING_MESH               = _UxGT("傾斜點"); // "Tilting Point"
   LSTR MSG_UBL_MANUAL_MESH                = _UxGT("手工建網"); // "Manually Build Mesh"
   LSTR MSG_UBL_BC_INSERT                  = _UxGT("放置墊片並測量"); // "Place shim & measure"
   LSTR MSG_UBL_BC_INSERT2                 = _UxGT("測量"); // "Measure"
   LSTR MSG_UBL_BC_REMOVE                  = _UxGT("移除並測量熱床"); // "Remove & measure bed"
   LSTR MSG_UBL_MOVING_TO_NEXT             = _UxGT("移動到下一個"); // "Moving to next"
-  LSTR MSG_UBL_ACTIVATE_MESH              = _UxGT("啟動UBL"); // "Activate UBL"
-  LSTR MSG_UBL_DEACTIVATE_MESH            = _UxGT("關閉UBL"); // "Deactivate UBL"
   LSTR MSG_UBL_SET_TEMP_BED               = _UxGT("置設熱床溫度"); // "Bed Temp"
   LSTR MSG_UBL_BED_TEMP_CUSTOM            = _UxGT("置設熱床溫度"); // "Bed Temp"
   LSTR MSG_UBL_SET_TEMP_HOTEND            = _UxGT("置設噴嘴溫度"); // "Hotend Temp"
   LSTR MSG_UBL_HOTEND_TEMP_CUSTOM         = _UxGT("熱端溫度"); // "Hotend Temp"
-  LSTR MSG_UBL_MESH_EDIT                  = _UxGT("網格編輯"); // "Mesh Edit"
   LSTR MSG_UBL_EDIT_CUSTOM_MESH           = _UxGT("編輯客戶網格"); // "Edit Custom Mesh"
   LSTR MSG_UBL_FINE_TUNE_MESH             = _UxGT("細調網格"); // "Fine Tuning Mesh"
   LSTR MSG_UBL_DONE_EDITING_MESH          = _UxGT("完成編輯網格"); // "Done Editing Mesh"
@@ -193,7 +190,8 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_UBL_7_SAVE_MESH                = _UxGT("7. 保存熱床網格");
 
   LSTR MSG_LED_CONTROL                    = _UxGT("燈管控制"); // "LED Control"
-  LSTR MSG_LEDS                           = _UxGT("燈"); // "Lights"
+  LSTR MSG_LIGHTS                         = _UxGT("燈"); // "Lights"
+  LSTR MSG_LIGHT_N                        = _UxGT("燈 #{"); // "Light #{"
   LSTR MSG_LED_PRESETS                    = _UxGT("燈預置"); // "Light Presets"
   LSTR MSG_SET_LEDS_RED                   = _UxGT("红"); // "Red"
   LSTR MSG_SET_LEDS_ORANGE                = _UxGT("橙"); // "Orange"
@@ -220,12 +218,9 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_MOVE_E                         = _UxGT("擠出機"); // "Extruder"
   LSTR MSG_MOVE_EN                        = _UxGT("擠出機 *"); // "Extruder *"
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("噴嘴溫度不夠"); // "Hotend too cold"
-  LSTR MSG_MOVE_N_MM                      = _UxGT("移動 $ mm"); // "Move 0.025mm"
-  LSTR MSG_MOVE_01MM                      = _UxGT("移動 0.1 mm"); // "Move 0.1mm"
-  LSTR MSG_MOVE_1MM                       = _UxGT("移動 1 mm"); // "Move 1mm"
-  LSTR MSG_MOVE_10MM                      = _UxGT("移動 10 mm"); // "Move 10mm"
-  LSTR MSG_MOVE_50MM                      = _UxGT("移動 50 mm"); // "Move 50mm"
-  LSTR MSG_MOVE_100MM                     = _UxGT("移動 100 mm"); // "Move 100mm"
+  LSTR MSG_MOVE_N_MM                      = _UxGT("移動 $mm"); // "Move $mm"
+  LSTR MSG_MOVE_N_IN                      = _UxGT("移動 $in"); // "Move $in"
+  LSTR MSG_MOVE_N_DEG                     = _UxGT("移動 $") LCD_STR_DEGREE; // "Move $°"
   LSTR MSG_SPEED                          = _UxGT("速率"); // "Speed"
   LSTR MSG_MESH_Z_OFFSET                  = _UxGT("熱床Z"); // "Bed Z"
   LSTR MSG_NOZZLE                         = " " LCD_STR_THERMOMETER _UxGT(" 噴嘴"); // "Nozzle" 噴嘴
@@ -355,8 +350,12 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("卸載絲料"); // "Unload filament"
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("卸載絲料 *"); // "Unload filament"
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("卸載全部"); // "Unload All"
-  LSTR MSG_INIT_MEDIA                     = _UxGT("初始化記憶卡"); // "Init. SD card"
-  LSTR MSG_ATTACH_MEDIA                   = _UxGT("連接記憶卡"); // "Attach Media
+  #if HAS_MULTI_VOLUME
+    LSTR MSG_ATTACH_SD_MEDIA              = _UxGT("挂载記憶卡"); // "Attach SD Card"
+    LSTR MSG_ATTACH_USB_MEDIA             = _UxGT("挂载隨身碟"); // "Attach USB Drive"
+  #else
+    LSTR MSG_ATTACH_MEDIA                 = _UxGT("連接記憶卡"); // "Attach Media"
+  #endif
   LSTR MSG_CHANGE_MEDIA                   = _UxGT("更換記憶卡"); // "Change SD card"
   LSTR MSG_RELEASE_MEDIA                  = _UxGT("釋放媒體"); // "Release Media"
   LSTR MSG_ZPROBE_OUT                     = _UxGT("Z探針在熱床之外"); // "Z probe out. bed" Z probe is not within the physical limits
@@ -368,20 +367,20 @@ namespace LanguageNarrow_zh_TW {
   LSTR MSG_BLTOUCH_DEPLOY                 = _UxGT("部署BLTouch"); // "Deploy BLTouch"
 
   LSTR MSG_HOME_FIRST                     = _UxGT("歸位 %s 先"); // "Home ... first"
-  LSTR MSG_ZPROBE_OFFSETS                 = _UxGT("探針偏移"); //Probe Offsets
-  LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("探針X偏移量"); //Probe X Offset
-  LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("探針Y偏移量"); //Probe Y Offset
-  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("探針Z偏移量"); //Probe Z Offset
+  LSTR MSG_ZPROBE_OFFSETS                 = _UxGT("探針偏移"); // "Probe Offsets"
+  LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("探針X偏移量"); // "Probe X Offset"
+  LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("探針Y偏移量"); // "Probe Y Offset"
+  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("探針Z偏移量"); // "Probe Z Offset"
+  LSTR MSG_ZPROBE_OFFSET_N                = _UxGT("探針@偏移量"); // "Probe @ Offset"
+  LSTR MSG_BABYSTEP_PROBE_Z               = _UxGT("逐步調整Z"); // "Babystep Probe Z"
   LSTR MSG_BABYSTEP_X                     = _UxGT("微量調整X軸"); // "Babystep X" lcd_babystep_x, Babystepping enables the user to control the axis in tiny amounts
   LSTR MSG_BABYSTEP_Y                     = _UxGT("微量調整Y軸"); // "Babystep Y"
   LSTR MSG_BABYSTEP_Z                     = _UxGT("微量調整Z軸"); // "Babystep Z"
   LSTR MSG_BABYSTEP_TOTAL                 = _UxGT("總計"); // "Total"
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("擋塊終止"); // "Endstop abort"
-  LSTR MSG_HEATING_FAILED_LCD             = _UxGT("加熱失敗"); // "Heating failed"
+  LSTR MSG_ERR_HEATING_FAILED             = _UxGT("加熱失敗"); // "Heating failed"
   LSTR MSG_ERR_REDUNDANT_TEMP             = _UxGT("錯誤：冗餘溫度"); // "Err: REDUNDANT TEMP"
-  LSTR MSG_THERMAL_RUNAWAY                = _UxGT("溫度失控"); // "THERMAL RUNAWAY"
-  LSTR MSG_THERMAL_RUNAWAY_BED            = _UxGT("熱床溫度失控"); // "BED THERMAL RUNAWAY"
-  LSTR MSG_THERMAL_RUNAWAY_CHAMBER        = _UxGT("機箱溫度失控"); // "CHAMBER T. RUNAWAY"
+  LSTR MSG_ERR_THERMAL_RUNAWAY            = _UxGT("溫度失控"); // "THERMAL RUNAWAY"
   LSTR MSG_ERR_MAXTEMP                    = _UxGT("錯誤：最高溫度"); // "Err: MAXTEMP"
   LSTR MSG_ERR_MINTEMP                    = _UxGT("錯誤：最低溫度"); // "Err: MINTEMP"
   LSTR MSG_HALTED                         = _UxGT("印表機停機"); // "PRINTER HALTED"
